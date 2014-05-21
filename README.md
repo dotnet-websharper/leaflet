@@ -1,4 +1,4 @@
-# WebSharper.JQueryUI
+# WebSharper.Leaflet
 
 [Leaflet](http://leafletjs.com/)
 development support for
