@@ -736,6 +736,7 @@ module Definition =
 
     let PathOptions =
         Class "L.Path.Options"
+        |+> [Constructor T<unit> |> WithInline "{}"]
         |+> Protocol [
             "stroke" =% T<bool>
             |> WithComment "Whether to draw stroke along the path. Set it to false to disable borders on polygons or circles."
