@@ -13,6 +13,8 @@ module Definition =
     let LatLngOrCoords = LatLngT + T<float * float>
     let PointT = Type.New()
     let PointOrCoords = PointT + T<int * int>
+    let LatLngBoundsT = Type.New()
+    let LatLngBoundsOrCoords = LatLngBoundsT + Type.ArrayOf LatLngOrCoords
 
     let LatLng =
         let x = T<float>?longitude
@@ -47,9 +49,8 @@ module Definition =
         ]
 
     let LatLngBounds =
-        let LatLngBounds = Type.New()
         Class "L.LatLngBounds"
-        |=> LatLngBounds
+        |=> LatLngBoundsT
         |+> [
             Constructor (LatLngOrCoords?southWest * LatLngOrCoords?northEast)
             |> WithComment "Creates a latLngBounds object by defining south-west and north-east corners of the rectangle."
@@ -57,7 +58,7 @@ module Definition =
             |> WithComment "Creates a LatLngBounds object defined by the geographical points it contains. Very useful for zooming the map to fit a particular set of locations with fitBounds."
         ]
         |+> Protocol [
-            "extend" => (LatLngOrCoords + LatLngBounds) ^-> T<unit>
+            "extend" => (LatLngOrCoords + LatLngBoundsOrCoords) ^-> T<unit>
             |> WithComment "Extends the bounds to contain the given point or bounds."
             "getSouthWest" => T<unit> ^-> LatLng
             |> WithComment "Returns the south-west point of the bounds."
@@ -75,17 +76,17 @@ module Definition =
             |> WithComment "Returns the east longitude point of the bounds."
             "getWest" => T<unit -> float>
             |> WithComment "Returns the west longitude point of the bounds."
-            "contains" => LatLngBounds ^-> T<bool>
+            "contains" => LatLngBoundsOrCoords ^-> T<bool>
             |> WithComment "Returns true if the rectangle contains the given one."
             "contains" => LatLngOrCoords ^-> T<bool>
             |> WithComment "Returns true if the rectangle contains the given point."
-            "intersects" => LatLngBounds ^-> T<bool>
+            "intersects" => LatLngBoundsOrCoords ^-> T<bool>
             |> WithComment "Returns true if the rectangle intersects the given bounds."
-            "equals" => LatLngBounds ^-> T<bool>
+            "equals" => LatLngBoundsOrCoords ^-> T<bool>
             |> WithComment "Returns true if the rectangle is equivalent (within a small margin of error) to the given bounds."
             "toBBoxString" => T<unit -> string>
             |> WithComment "Returns a string with bounding box coordinates in a 'southwest_lng,southwest_lat,northeast_lng,northeast_lat' format. Useful for sending requests to web services that return geo data."
-            "pad" => T<float> ^-> LatLngBounds
+            "pad" => T<float> ^-> LatLngBoundsT
             |> WithComment "Returns bigger bounds created by extending the current bounds by a given percentage in each direction."
             "isValid" => T<unit -> bool>
             |> WithComment "Returns true if the bounds are properly initialized."
@@ -715,7 +716,7 @@ module Definition =
     let ImageOverlay =
         Class "L.ImageOverlay"
         |+> [
-            Constructor (T<string>?url * LatLngBounds?bounds * !?ImageOverlayOptions)
+            Constructor (T<string>?url * LatLngBoundsOrCoords?bounds * !?ImageOverlayOptions)
             |> WithComment "Instantiates an image overlay object given the URL of the image and the geographical bounds it is tied to."
         ]
         |=> Nested [ImageOverlayOptions]
@@ -898,11 +899,11 @@ module Definition =
         Class "L.Rectangle"
         |=> Inherits Polygon
         |+> [
-            Constructor (LatLngBounds * !?PathOptions)
+            Constructor (LatLngBoundsOrCoords * !?PathOptions)
             |> WithComment "Instantiates a rectangle object with the given geographical bounds and optionally an options object."
         ]
         |+> Protocol [
-            "setBounds" => LatLngBounds ^-> T<unit>
+            "setBounds" => LatLngBoundsOrCoords ^-> T<unit>
             |> WithComment "Redraws the rectangle with the passed bounds."
         ]
 
@@ -1506,13 +1507,13 @@ module Definition =
             |> WithComment "Decreases the zoom of the map by delta (1 by default)."
             "setZoomAround" => LatLngOrCoords?latlng * T<int>?zoom * ZoomOptions?options ^-> T<unit>
             |> WithComment "Zooms the map while keeping a specified point on the map stationary (e.g. used internally for scroll zoom and double-click zoom)."
-            "fitBounds" => LatLngBounds?bounds * !?FitBoundsOptions?options ^-> T<unit>
+            "fitBounds" => LatLngBoundsOrCoords?bounds * !?FitBoundsOptions?options ^-> T<unit>
             |> WithComment "Sets a map view that contains the given geographical bounds with the maximum zoom level possible."
             "fitWorld" => !?FitBoundsOptions?options ^-> T<unit>
             |> WithComment "Sets a map view that mostly contains the whole world with the maximum zoom level possible."
             "panTo" => LatLngOrCoords?latlng * !?PanOptions?options ^-> T<unit>
             |> WithComment "Pans the map to a given center. Makes an animated pan if new center is not more than one screen away from the current one."
-            "panInsideBounds" => LatLngBounds?bounds * !?PanOptions?options ^-> T<unit>
+            "panInsideBounds" => LatLngBoundsOrCoords?bounds * !?PanOptions?options ^-> T<unit>
             |> WithComment "Pans the map to the closest view that would lie inside the given bounds (if it's not already), controlling the animation using the options specific, if any."
             "panBy" => PointOrCoords?point * !?PanOptions?options ^-> T<unit>
             |> WithComment "Pans the map by a given number of pixels (animated)."
@@ -1520,7 +1521,7 @@ module Definition =
             |> WithComment "Checks if the map container size changed and updates the map if so — call it after you've changed the map size dynamically, also animating pan by default."
             "invalidateSize" => ZoomPanOptions?options ^-> T<unit>
             |> WithComment "Checks if the map container size changed and updates the map if so — call it after you've changed the map size dynamically, also animating pan by default. If options.pan is false, panning will not occur. If options.debounceMoveend is true, it will delay moveend event so that it doesn't happen often even if the method is called many times in a row."
-            "setMaxBounds" => LatLngBounds?bounds ^-> T<unit>
+            "setMaxBounds" => LatLngBoundsOrCoords?bounds ^-> T<unit>
             |> WithComment "Restricts the map view to the given bounds (see map maxBounds option)."
             "locate" => LocateOptions?options ^-> T<unit>
             |> WithComment "Tries to locate the user using the Geolocation API, firing a locationfound event with location data on success or a locationerror event on failure, and optionally sets the map view to the user's location with respect to detection accuracy (or to the world view if geolocation failed). See Locate options for more details."
@@ -1539,7 +1540,7 @@ module Definition =
             |> WithComment "Returns the maximum zoom level of the map."
             "getBounds" => T<unit> ^-> LatLngBounds
             |> WithComment "Returns the LatLngBounds of the current map view."
-            "getBoundsZoom" => LatLngBounds * !?T<bool>?inside ^-> T<int>
+            "getBoundsZoom" => LatLngBoundsOrCoords * !?T<bool>?inside ^-> T<int>
             |> WithComment "Returns the maximum zoom level on which the given bounds fit to the map view in its entirety. If inside (optional) is set to true, the method instead returns the minimum zoom level on which the map view fits into the given bounds in its entirety."
             "getSize" => T<unit> ^-> Point
             |> WithComment "Returns the current size of the map container."
