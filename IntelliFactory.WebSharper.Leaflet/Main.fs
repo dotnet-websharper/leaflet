@@ -315,8 +315,8 @@ module Definition =
         ]
 
     let Event =
-        Interface "L.Event"
-        |+> [
+        Class "L.Event"
+        |+> Protocol [
             "type" =? T<string>
             |> WithComment "The event type (e.g. 'click')."
             "target" =? T<obj>
@@ -324,9 +324,9 @@ module Definition =
         ]
 
     let MouseEvent =
-        Interface "L.MouseEvent"
-        |=> Extends [Event]
-        |+> [
+        Class "L.MouseEvent"
+        |=> Inherits Event
+        |+> Protocol [
             "latlng" =? LatLng
             |> WithComment "The geographical point where the mouse event occured."
             "layerPoint" =? Point
@@ -338,9 +338,9 @@ module Definition =
         ]
 
     let LocationEvent =
-        Interface "L.LocationEvent"
-        |=> Extends [Event]
-        |+> [
+        Class "L.LocationEvent"
+        |=> Inherits Event
+        |+> Protocol [
             "latlng" =? LatLng
             |> WithComment "Detected geographical location of the user."
             "bounds" =? LatLngBounds
@@ -360,9 +360,9 @@ module Definition =
         ]
 
     let ErrorEvent =
-        Interface "L.ErrorEvent"
-        |=> Extends [Event]
-        |+> [
+        Class "L.ErrorEvent"
+        |=> Inherits Event
+        |+> Protocol [
             "message" =? T<string>
             |> WithComment "Error message."
             "code" =? T<int>
@@ -370,17 +370,17 @@ module Definition =
         ]
 
     let LayerEvent =
-        Interface "L.LayerEvent"
-        |=> Extends [Event]
-        |+> [
+        Class "L.LayerEvent"
+        |=> Inherits Event
+        |+> Protocol [
             "layer" =? ILayer
             |> WithComment "The layer that was added or removed."
         ]
 
     let LayersControlEvent =
-        Interface "L.LayersControlEvent"
-        |=> Extends [Event]
-        |+> [
+        Class "L.LayersControlEvent"
+        |=> Inherits Event
+        |+> Protocol [
             "layer" =? ILayer
             |> WithComment "The layer that was added or removed."
             "name" =? T<string>
@@ -388,9 +388,9 @@ module Definition =
         ]
 
     let TileEvent =
-        Interface "L.TileEvent"
-        |=> Extends [Event]
-        |+> [
+        Class "L.TileEvent"
+        |=> Inherits Event
+        |+> Protocol [
             "tile" =? T<Element>
             |> WithComment "The tile element (image)."
             "url" =? T<string>
@@ -398,9 +398,9 @@ module Definition =
         ]
 
     let ResizeEvent =
-        Interface "L.ResizeEvent"
-        |=> Extends [Event]
-        |+> [
+        Class "L.ResizeEvent"
+        |=> Inherits Event
+        |+> Protocol [
             "oldSize" =? Point
             |> WithComment "The old size before resize event."
             "newSize" =? Point
@@ -408,9 +408,9 @@ module Definition =
         ]
 
     let GeoJSONEvent =
-        Interface "L.GeoJSONEvent"
-        |=> Extends [Event]
-        |+> [
+        Class "L.GeoJSONEvent"
+        |=> Inherits Event
+        |+> Protocol [
             "layer" =? ILayer
             |> WithComment "The layer for the GeoJSON feature that is being added to the map."
             "properties" =? T<obj>
@@ -422,17 +422,17 @@ module Definition =
         ]
 
     let PopupEvent =
-        Interface "L.PopupEvent"
-        |=> Extends [Event]
-        |+> [
+        Class "L.PopupEvent"
+        |=> Inherits Event
+        |+> Protocol [
             "popup" =? PopupT
             |> WithComment "The popup that was opened or closed."
         ]
 
     let DragEndEvent =
-        Interface "L.DragEndEvent"
-        |=> Extends [Event]
-        |+> [
+        Class "L.DragEndEvent"
+        |=> Inherits Event
+        |+> Protocol [
             "distance" =? T<int>
             |> WithComment "The distance in pixels the draggable element was moved by."
         ]
@@ -670,6 +670,7 @@ module Definition =
     let TileLayer =
         Class "L.TileLayer"
         |=> TileLayerT
+        |=> Implements [ILayer]
         |=> Nested [TileLayerOptions; TileLayerWMS; TileLayerCanvas; TileLayerOSM; TileLayerMapbox]
         |+> [
             Constructor (T<string>?urlTemplate * !?TileLayerOptions)
@@ -1343,8 +1344,8 @@ module Definition =
         ]
 
     let MapPanes =
-        Interface "L.MapPanes"
-        |+> [
+        Class "L.MapPanes"
+        |+> Protocol [
             "mapPane" =? T<Element>
             |> WithComment "Pane that contains all other map panes."
             "tilePane" =? T<Element>
@@ -1495,7 +1496,7 @@ module Definition =
         ]
         |+> Protocol [
             // Methods
-            "setView" => LatLng?center * !?T<int>?zoom * !?ZoomPanOptions?options ^-> T<unit>
+            "setView" => LatLngOrCoords?center * !?T<int>?zoom * !?ZoomPanOptions?options ^-> T<unit>
             |> WithComment "Sets the view of the map (geographical center and zoom) with the given animation options."
             "setZoom" => T<int>?zoom * !?ZoomOptions?options ^-> T<unit>
             |> WithComment "Sets the zoom of the map."
