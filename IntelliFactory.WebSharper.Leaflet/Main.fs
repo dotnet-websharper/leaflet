@@ -768,6 +768,7 @@ module Definition =
     let Path =
         Class "L.Path"
         |=> Nested [PathOptions]
+        |=> Implements [ILayer]
         |+> Protocol [
             "addTo" => MapT ^-> T<unit>
             |> WithComment "Adds the layer to the map."
