@@ -9,14 +9,14 @@ let main =
     bt.WebSharper.Extension("IntelliFactory.WebSharper.Leaflet")
         .SourcesFromProject()
 
-// let test =
-//     bt.WebSharper.HtmlWebsite("IntelliFactory.WebSharper.Leaflet.Tests")
-//         .SourcesFromProject()
-//         .References(fun r -> [r.Project main])
+let test =
+    bt.WebSharper.HtmlWebsite("IntelliFactory.WebSharper.Leaflet.Tests")
+        .SourcesFromProject()
+        .References(fun r -> [r.Project main])
 
 bt.Solution [
     main
-    // test
+    test
 
     bt.NuGet.CreatePackage()
         .Configure(fun c ->
