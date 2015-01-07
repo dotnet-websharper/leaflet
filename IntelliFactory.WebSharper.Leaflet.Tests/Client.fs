@@ -1,7 +1,8 @@
 namespace IntelliFactory.WebSharper.Leaflet.Tests
 
 open IntelliFactory.WebSharper
-open IntelliFactory.WebSharper.Html
+open IntelliFactory.WebSharper.JavaScript
+open IntelliFactory.WebSharper.Html.Client
 
 [<JavaScript>]
 module Client =
@@ -11,7 +12,7 @@ module Client =
         Div [
             Div [Attr.Style "height: 600px;"]
             |>! OnAfterRender (fun div ->
-                let map = Leaflet.Map(div.Body)
+                let map = Leaflet.Map(div.Dom)
                 map.SetView((47.49883, 19.0582), 14)
                 map.AddLayer(
                     Leaflet.TileLayer(

@@ -1,7 +1,7 @@
 ﻿namespace IntelliFactory.WebSharper.Leaflet
 
-open IntelliFactory.WebSharper.Dom
-open IntelliFactory.WebSharper.Html5
+open IntelliFactory.WebSharper
+open IntelliFactory.WebSharper.JavaScript.Dom
 
 module Definition =
     open IntelliFactory.WebSharper.InterfaceGenerator
@@ -600,9 +600,9 @@ module Definition =
             |> WithComment "Instantiates a Canvas tile layer object given an options object (optionally)."
         ]
         |+> Protocol [
-            "drawTile" => T<CanvasElement> * PointOrCoords * T<int>?zoom ^-> T<unit>
+            "drawTile" => T<JavaScript.CanvasElement> * PointOrCoords * T<int>?zoom ^-> T<unit>
             |> WithComment "You need to define this method after creating the instance to draw tiles; canvas is the actual canvas tile on which you can draw, tilePoint represents the tile numbers, and zoom is the current zoom."
-            "tileDrawn" => T<CanvasElement> ^-> T<unit>
+            "tileDrawn" => T<JavaScript.CanvasElement> ^-> T<unit>
             |> WithComment "If async option is defined, this function should be called for each tile after drawing completion. canvas is the same canvas element, that was passed to drawTile."
         ]
 
@@ -754,9 +754,9 @@ module Definition =
             |> WithComment "Fill opacity."
             "dashArray" =% T<string>
             |> WithComment "A string that defines the stroke dash pattern. Doesn't work on canvas-powered layers (e.g. Android 2)."
-            "lineCap" =% T<LineCap>
+            "lineCap" =% T<JavaScript.LineCap>
             |> WithComment "A string that defines shape to be used at the end of the stroke."
-            "lineJoin" =% T<LineJoin>
+            "lineJoin" =% T<JavaScript.LineJoin>
             |> WithComment "A string that defines shape to be used at the corners of the stroke."
             "clickable" =% T<bool>
             |> WithComment "If false, the vector will not emit mouse events and will act as a part of the underlying map."
