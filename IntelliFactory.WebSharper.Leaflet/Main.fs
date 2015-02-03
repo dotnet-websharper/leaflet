@@ -20,17 +20,17 @@ module Definition =
         let x = T<float>?longitude
         Class "L.LatLng"
         |=> LatLngT
-        |+> [
+        |+> Static [
             Constructor (T<float>?latitude * T<float>?longitude * !?T<float>?altitude)
             |> WithComment "Creates an object representing a geographical point with the given latitude and longitude (and optionally altitude)."
             "DEG_TO_RAD" =? T<float>
             |> WithComment "A multiplier for converting degrees into radians."
             "RAD_TO_DEG" =? T<float>
             |> WithComment "A multiplier for converting radians into degrees."
-            "MAX_MARGIN" =% T<float>
+            "MAX_MARGIN" =@ T<float>
             |> WithComment "Max margin of error for the equality check."
         ]
-        |+> Protocol [
+        |+> Instance [
             "lat" =? T<float>
             |> WithComment "Latitude in degrees."
             "lng" =? T<float>
@@ -51,13 +51,13 @@ module Definition =
     let LatLngBounds =
         Class "L.LatLngBounds"
         |=> LatLngBoundsT
-        |+> [
+        |+> Static [
             Constructor (LatLngOrCoords?southWest * LatLngOrCoords?northEast)
             |> WithComment "Creates a latLngBounds object by defining south-west and north-east corners of the rectangle."
             Constructor (Type.ArrayOf LatLngOrCoords)
             |> WithComment "Creates a LatLngBounds object defined by the geographical points it contains. Very useful for zooming the map to fit a particular set of locations with fitBounds."
         ]
-        |+> Protocol [
+        |+> Instance [
             "extend" => (LatLngOrCoords + LatLngBoundsOrCoords) ^-> T<unit>
             |> WithComment "Extends the bounds to contain the given point or bounds."
             "getSouthWest" => T<unit> ^-> LatLng
@@ -95,13 +95,13 @@ module Definition =
     let Point =
         Class "L.Point"
         |=> PointT
-        |+> [
+        |+> Static [
             Constructor (T<float>?x * T<float>?y)
             |> WithComment "Creates a Point object with the given x and y coordinates. Rounds the x and y values."
             Constructor (T<int>?x * T<int>?y)
             |> WithComment "Creates a Point object with the given x and y coordinates."
         ]
-        |+> Protocol [
+        |+> Instance [
             "x" =? T<int>
             |> WithComment "The x coordinate."
             "y" =? T<int>
@@ -135,11 +135,11 @@ module Definition =
         let Bounds = Type.New()
         Class "L.Bounds"
         |=> Bounds
-        |+> [
+        |+> Static [
             Constructor (PointOrCoords?topLeft * PointOrCoords?bottomRight)
             |> WithComment "Creates a Bounds object from two coordinates (usually top-left and bottom-right corners)."
         ]
-        |+> Protocol [
+        |+> Instance [
             "min" =? Point
             |> WithComment "The top left corner of the rectangle."
             "max" =? Point
@@ -163,49 +163,49 @@ module Definition =
 
     let IconOptions =
         Class "L.Icon.Options"
-        |+> [Constructor T<string>?IconUrl |> WithInline "{iconUrl:$IconUrl}"]
-        |+> Protocol [
-            "iconUrl" =% T<string>
+        |+> Static [Constructor T<string>?IconUrl |> WithInline "{iconUrl:$IconUrl}"]
+        |+> Instance [
+            "iconUrl" =@ T<string>
             |> WithComment "(required) The URL to the icon image (absolute or relative to your script path)."
-            "iconRetinaUrl" =% T<string>
+            "iconRetinaUrl" =@ T<string>
             |> WithComment "The URL to a retina sized version of the icon image (absolute or relative to your script path). Used for Retina screen devices."
-            "iconSize" =% Point
+            "iconSize" =@ Point
             |> WithComment "Size of the icon image in pixels."
-            "iconAnchor" =% Point
+            "iconAnchor" =@ Point
             |> WithComment "The coordinates of the \"tip\" of the icon (relative to its top left corner). The icon will be aligned so that this point is at the marker's geographical location. Centered by default if size is specified, also can be set in CSS with negative margins."
-            "shadowUrl" =% T<string>
+            "shadowUrl" =@ T<string>
             |> WithComment "The URL to the icon shadow image. If not specified, no shadow image will be created."
-            "shadowRetinaUrl" =% T<string>
+            "shadowRetinaUrl" =@ T<string>
             |> WithComment "The URL to the retina sized version of the icon shadow image. If not specified, no shadow image will be created. Used for Retina screen devices."
-            "shadowSize" =% Point
+            "shadowSize" =@ Point
             |> WithComment "Size of the shadow image in pixels."
-            "shadowAnchor" =% Point
+            "shadowAnchor" =@ Point
             |> WithComment "The coordinates of the \"tip\" of the shadow (relative to its top left corner) (the same as iconAnchor if not specified)."
-            "popupAnchor" =% Point
+            "popupAnchor" =@ Point
             |> WithComment "The coordinates of the point from which popups will \"open\", relative to the icon anchor."
-            "className" =% T<string>
+            "className" =@ T<string>
             |> WithComment "A custom class name to assign to both icon and shadow images. Empty by default."
         ]
 
     let Icon =
         Class "L.Icon"
         |=> Nested [IconOptions]
-        |+> [
+        |+> Static [
             Constructor IconOptions
             |> WithComment "Creates an icon instance with the given options."
         ]
 
     let DivIconOptions =
         Class "L.DivIcon.Options"
-        |+> [Constructor T<unit> |> WithInline "{}"]
-        |+> Protocol [
-            "iconSize" =% Point
+        |+> Static [Constructor T<unit> |> WithInline "{}"]
+        |+> Instance [
+            "iconSize" =@ Point
             |> WithComment "Size of the icon in pixels. Can be also set through CSS."
-            "iconAnchor" =% Point
+            "iconAnchor" =@ Point
             |> WithComment "The coordinates of the \"tip\" of the icon (relative to its top left corner). The icon will be aligned so that this point is at the marker's geographical location. Centered by default if size is specified, also can be set in CSS with negative margins."
-            "className" =% T<string>
+            "className" =@ T<string>
             |> WithComment "A custom class name to assign to the icon. 'leaflet-div-icon' by default."
-            "html" =% T<string>
+            "html" =@ T<string>
             |> WithComment "A custom HTML code to put inside the div element, empty by default."
         ]
 
@@ -213,7 +213,7 @@ module Definition =
         Class "L.DivIcon"
         |=> Nested [DivIconOptions]
         |=> Inherits Icon
-        |+> [
+        |+> Static [
             Constructor DivIconOptions
             |> WithComment "Creates a div icon instance with the given options."
         ]
@@ -221,10 +221,10 @@ module Definition =
     let Transformation =
         Class "L.Transformation"
         |> WithComment "Represents an affine transformation: a set of coefficients a, b, c, d for transforming a point of a form (x, y) into (a*x + b, c*y + d) and doing the reverse. Used by Leaflet in its projections code."
-        |+> [
+        |+> Static [
             Constructor (T<float>?a * T<float>?b * T<float>?c * T<float>?d)
         ]
-        |+> Protocol [
+        |+> Instance [
             "transform" => PointOrCoords * T<float>?scale ^-> Point
             |> WithComment "Returns a transformed point, optionally multiplied by the given scale. Only accepts real L.Point instances, not arrays."
             "untransform" => PointOrCoords * T<float>?scale ^-> Point
@@ -293,7 +293,7 @@ module Definition =
 
     let CRS =
         Class "L.CRS"
-        |+> [
+        |+> Static [
             "EPSG3857" =? ICRS
             |> WithComment "The most common CRS for online maps, used by almost all free and commercial tile providers. Uses Spherical Mercator projection. Set in by default in Map's crs option."
             "EPSG4326" =? ICRS
@@ -306,7 +306,7 @@ module Definition =
 
     let Projection =
         Class "L.Projection"
-        |+> [
+        |+> Static [
             "SphericalMercator" =? IProjection
             |> WithComment "Spherical Mercator projection — the most common projection for online maps, used by almost all free and commercial tile providers. Assumes that Earth is a sphere. Used by the EPSG:3857 CRS."
             "Mercator" =? IProjection
@@ -317,7 +317,7 @@ module Definition =
 
     let Event =
         Class "L.Event"
-        |+> Protocol [
+        |+> Instance [
             "type" =? T<string>
             |> WithComment "The event type (e.g. 'click')."
             "target" =? T<obj>
@@ -327,7 +327,7 @@ module Definition =
     let MouseEvent =
         Class "L.MouseEvent"
         |=> Inherits Event
-        |+> Protocol [
+        |+> Instance [
             "latlng" =? LatLng
             |> WithComment "The geographical point where the mouse event occured."
             "layerPoint" =? Point
@@ -341,7 +341,7 @@ module Definition =
     let LocationEvent =
         Class "L.LocationEvent"
         |=> Inherits Event
-        |+> Protocol [
+        |+> Instance [
             "latlng" =? LatLng
             |> WithComment "Detected geographical location of the user."
             "bounds" =? LatLngBounds
@@ -363,7 +363,7 @@ module Definition =
     let ErrorEvent =
         Class "L.ErrorEvent"
         |=> Inherits Event
-        |+> Protocol [
+        |+> Instance [
             "message" =? T<string>
             |> WithComment "Error message."
             "code" =? T<int>
@@ -373,7 +373,7 @@ module Definition =
     let LayerEvent =
         Class "L.LayerEvent"
         |=> Inherits Event
-        |+> Protocol [
+        |+> Instance [
             "layer" =? ILayer
             |> WithComment "The layer that was added or removed."
         ]
@@ -381,7 +381,7 @@ module Definition =
     let LayersControlEvent =
         Class "L.LayersControlEvent"
         |=> Inherits Event
-        |+> Protocol [
+        |+> Instance [
             "layer" =? ILayer
             |> WithComment "The layer that was added or removed."
             "name" =? T<string>
@@ -391,7 +391,7 @@ module Definition =
     let TileEvent =
         Class "L.TileEvent"
         |=> Inherits Event
-        |+> Protocol [
+        |+> Instance [
             "tile" =? T<Element>
             |> WithComment "The tile element (image)."
             "url" =? T<string>
@@ -401,7 +401,7 @@ module Definition =
     let ResizeEvent =
         Class "L.ResizeEvent"
         |=> Inherits Event
-        |+> Protocol [
+        |+> Instance [
             "oldSize" =? Point
             |> WithComment "The old size before resize event."
             "newSize" =? Point
@@ -411,7 +411,7 @@ module Definition =
     let GeoJSONEvent =
         Class "L.GeoJSONEvent"
         |=> Inherits Event
-        |+> Protocol [
+        |+> Instance [
             "layer" =? ILayer
             |> WithComment "The layer for the GeoJSON feature that is being added to the map."
             "properties" =? T<obj>
@@ -425,7 +425,7 @@ module Definition =
     let PopupEvent =
         Class "L.PopupEvent"
         |=> Inherits Event
-        |+> Protocol [
+        |+> Instance [
             "popup" =? PopupT
             |> WithComment "The popup that was opened or closed."
         ]
@@ -433,7 +433,7 @@ module Definition =
     let DragEndEvent =
         Class "L.DragEndEvent"
         |=> Inherits Event
-        |+> Protocol [
+        |+> Instance [
             "distance" =? T<int>
             |> WithComment "The distance in pixels the draggable element was moved by."
         ]
@@ -441,7 +441,7 @@ module Definition =
     let WithEvents events cls : CodeModel.Class =
         cls
         |+> (
-            Protocol [
+            Instance [
                 "addEventListener" => T<string>?``type`` * (cls -* Event ^-> T<unit>)?fn * !?T<obj>?context ^-> T<unit>
                 |> WithComment "Adds a listener function (fn) to a particular event type of the object. You can optionally specify the context of the listener (object the this keyword will point to). You can also pass several space-separated types (e.g. 'click dblclick')."
                 "addOneTimeEventListener" => T<string>?``type`` * (cls -* Event ^-> T<unit>)?fn * !?T<obj>?context ^-> T<unit>
@@ -474,17 +474,17 @@ module Definition =
                 |> WithComment "Removes all listeners. An alias to clearAllEventListeners when you use it without arguments."
                 "fire" => T<string>?``type`` * !?Event?data ^-> T<unit>
                 |> WithComment "Fires an event of the specified type. You can optionally provide an data object — the first argument of the listener function will contain its properties."
-            ] : CodeModel.IClassMember list)
-        |+> (events |> List.collect (fun (name, data, descr) ->
-            Protocol [
-                ("on_" + name) => (cls -* data ^-> T<unit>)?fn ^-> T<unit>
-                |> WithInline ("$this.on('" + name + "', $fn)")
+            ])
+        |+> Instance (events |> List.collect (fun (name, data, descr) ->
+            [
+                ("on_" + name) => (cls ^-> data ^-> T<unit>)?fn ^-> T<unit>
+                |> WithInline ("$this.on('" + name + "', $wsruntime.CreateFuncWithThis($fn))")
                 |> WithComment descr
-                ("once_" + name) => (cls -* data ^-> T<unit>)?fn ^-> T<unit>
-                |> WithInline ("$this.once('" + name + "', $fn)")
+                ("once_" + name) => (cls ^-> data ^-> T<unit>)?fn ^-> T<unit>
+                |> WithInline ("$this.once('" + name + "', $wsruntime.CreateFuncWithThis($fn))")
                 |> WithComment descr
-                ("off_" + name) => (cls -* data ^-> T<unit>)?fn ^-> T<unit>
-                |> WithInline ("$this.off('" + name + "', $fn)")
+                ("off_" + name) => (cls ^-> data ^-> T<unit>)?fn ^-> T<unit>
+                |> WithInline ("$this.off('" + name + "', $wsruntime.CreateFuncWithThis($fn))")
                 |> WithComment descr
                 ("off_" + name) => T<unit> ^-> T<unit>
                 |> WithInline ("$this.off('" + name + "')")
@@ -492,37 +492,37 @@ module Definition =
                 ("fire_" + name) => data ^-> T<unit>
                 |> WithInline ("$this.fire('" + name + "')")
                 |> WithComment descr
-            ] : CodeModel.IClassMember list))
+            ]))
 
     let PopupOptions =
         Class "L.Popup.Options"
-        |+> [Constructor T<unit> |> WithInline "{}"]
-        |+> Protocol [
-            "maxWidth" =% T<int>
+        |+> Static [Constructor T<unit> |> WithInline "{}"]
+        |+> Instance [
+            "maxWidth" =@ T<int>
             |> WithComment "Max width of the popup."
-            "minWidth" =% T<int>
+            "minWidth" =@ T<int>
             |> WithComment "Min width of the popup."
-            "maxHeight" =% T<int>
+            "maxHeight" =@ T<int>
             |> WithComment "If set, creates a scrollable container of the given height inside a popup if its content exceeds it."
-            "autoPan" =% T<bool>
+            "autoPan" =@ T<bool>
             |> WithComment "Set it to false if you don't want the map to do panning animation to fit the opened popup."
-            "keepInView" =% T<bool>
+            "keepInView" =@ T<bool>
             |> WithComment "Set it to true if you want to prevent users from panning the popup off of the screen while it is open."
-            "closeButton" =% T<bool>
+            "closeButton" =@ T<bool>
             |> WithComment "Controls the presense of a close button in the popup."
-            "offset" =% Point
+            "offset" =@ Point
             |> WithComment "The offset of the popup position. Useful to control the anchor of the popup when opening it on some overlays."
-            "autoPanPaddingTopLeft" =% Point
+            "autoPanPaddingTopLeft" =@ Point
             |> WithComment "The margin between the popup and the top left corner of the map view after autopanning was performed."
-            "autoPanPaddingBottomRight" =% Point
+            "autoPanPaddingBottomRight" =@ Point
             |> WithComment "The margin between the popup and the bottom right corner of the map view after autopanning was performed."
-            "autoPanPadding" =% Point
+            "autoPanPadding" =@ Point
             |> WithComment "Equivalent of setting both top left and bottom right autopan padding to the same value."
-            "zoomAnimation" =% T<bool>
+            "zoomAnimation" =@ T<bool>
             |> WithComment "Whether to animate the popup on zoom. Disable it if you have problems with Flash content inside popups."
-            "closeOnClick" =% T<bool>
+            "closeOnClick" =@ T<bool>
             |> WithComment "Set it to false if you want to override the default behavior of the popup closing when user clicks the map (set globally by the Map closePopupOnClick option)."
-            "className" =% T<string>
+            "className" =@ T<string>
             |> WithComment "A custom class name to assign to the popup."
         ]
 
@@ -531,11 +531,11 @@ module Definition =
         |=> Nested [PopupOptions]
         |=> Implements [ILayer]
         |=> PopupT
-        |+> [
+        |+> Static [
             Constructor (!?PopupOptions * !?ILayer?source)
             |> WithComment "Instantiates a Popup object given an optional options object that describes its appearance and location and an optional source object that is used to tag the popup with a reference to the ILayer to which it refers."
         ]
-        |+> Protocol [
+        |+> Instance [
             "addTo" => MapT ^-> T<unit>
             |> WithComment "Adds the popup to the map."
             "openOn" => MapT ^-> T<unit>
@@ -554,19 +554,19 @@ module Definition =
 
     let TileLayerWMSOptions =
         Class "L.TileLayer.WMS.Options"
-        |+> [Constructor T<string>?Layers |> WithInline "{layers:$Layers}"]
-        |+> Protocol [
-            "layers" =% T<string>
+        |+> Static [Constructor T<string>?Layers |> WithInline "{layers:$Layers}"]
+        |+> Instance [
+            "layers" =@ T<string>
             |> WithComment "(required) Comma-separated list of WMS layers to show."
-            "styles" =% T<string>
+            "styles" =@ T<string>
             |> WithComment "Comma-separated list of WMS styles."
-            "format" =% T<string>
+            "format" =@ T<string>
             |> WithComment "WMS image format (use 'image/png' for layers with transparency)."
-            "transparent" =% T<bool>
+            "transparent" =@ T<bool>
             |> WithComment "If true, the WMS service will return images with transparency."
-            "version" =% T<string>
+            "version" =@ T<string>
             |> WithComment "Version of the WMS service to use."
-            "crs" =% CRS
+            "crs" =@ CRS
             |> WithComment "Coordinate Reference System to use for the WMS requests, defaults to map CRS. Don't change this if you're not sure what it means."
         ]
 
@@ -574,20 +574,20 @@ module Definition =
         Class "L.TileLayer.WMS"
         |=> Nested [TileLayerWMSOptions]
         |=> Inherits TileLayerT
-        |+> [
+        |+> Static [
             Constructor (T<string>?baseUrl * !?TileLayerWMSOptions)
             |> WithComment "Instantiates a WMS tile layer object given a base URL of the WMS service and a WMS parameters/options object."
         ]
-        |+> Protocol [
+        |+> Instance [
             "setParams" => TileLayerWMSOptions * !?T<bool>?noRedraw ^-> T<unit>
             |> WithComment "Merges an object with the new parameters and re-requests tiles on the current screen (unless noRedraw was set to true)."
         ]
 
     let TileLayerCanvasOptions =
         Class "L.TileLayer.Canvas.Options"
-        |+> [Constructor T<unit> |> WithInline "{}"]
-        |+> Protocol [
-            "async" =% T<bool>
+        |+> Static [Constructor T<unit> |> WithInline "{}"]
+        |+> Instance [
+            "async" =@ T<bool>
             |> WithComment "Indicates that tiles will be drawn asynchronously. tileDrawn method should be called for each tile after drawing completion."
         ]
 
@@ -595,11 +595,11 @@ module Definition =
         Class "L.TileLayer.Canvas"
         |=> Nested [TileLayerCanvasOptions]
         |=> Inherits TileLayerT
-        |+> [
+        |+> Static [
             Constructor (!?TileLayerCanvasOptions)
             |> WithComment "Instantiates a Canvas tile layer object given an options object (optionally)."
         ]
-        |+> Protocol [
+        |+> Instance [
             "drawTile" => T<JavaScript.CanvasElement> * PointOrCoords * T<int>?zoom ^-> T<unit>
             |> WithComment "You need to define this method after creating the instance to draw tiles; canvas is the actual canvas tile on which you can draw, tilePoint represents the tile numbers, and zoom is the current zoom."
             "tileDrawn" => T<JavaScript.CanvasElement> ^-> T<unit>
@@ -608,51 +608,51 @@ module Definition =
 
     let TileLayerOptions =
         Class "L.TileLayer.Options"
-        |+> [Constructor T<unit> |> WithInline "{}"]
-        |+> Protocol [
-            "minZoom" =% T<int>
+        |+> Static [Constructor T<unit> |> WithInline "{}"]
+        |+> Instance [
+            "minZoom" =@ T<int>
             |> WithComment "Minimum zoom number."
-            "maxZoom" =% T<int>
+            "maxZoom" =@ T<int>
             |> WithComment "Maximum zoom number."
-            "maxNativeZoom" =% T<int>
+            "maxNativeZoom" =@ T<int>
             |> WithComment "Maximum zoom number the tiles source has available. If it is specified, the tiles on all zoom levels higher than maxNativeZoom will be loaded from maxZoom level and auto-scaled."
-            "tileSize" =% T<int>
+            "tileSize" =@ T<int>
             |> WithComment "Tile size (width and height in pixels, assuming tiles are square)."
-            "subdomains" =% T<string[]>
+            "subdomains" =@ T<string[]>
             |> WithComment "Subdomains of the tile service. Can be passed in the form of one string (where each letter is a subdomain name) or an array of strings."
-            "errorTileUrl" =% T<string>
+            "errorTileUrl" =@ T<string>
             |> WithComment "URL to the tile image to show in place of the tile that failed to load."
-            "attribution" =% T<string>
+            "attribution" =@ T<string>
             |> WithComment "e.g. \"© Mapbox\" — the string used by the attribution control, describes the layer data."
-            "tms" =% T<bool>
+            "tms" =@ T<bool>
             |> WithComment "If true, inverses Y axis numbering for tiles (turn this on for TMS services)."
-            "continuousWorld" =% T<bool>
+            "continuousWorld" =@ T<bool>
             |> WithComment "If set to true, the tile coordinates won't be wrapped by world width (-180 to 180 longitude) or clamped to lie within world height (-90 to 90). Use this if you use Leaflet for maps that don't reflect the real world (e.g. game, indoor or photo maps)."
-            "noWrap" =% T<bool>
+            "noWrap" =@ T<bool>
             |> WithComment "If set to true, the tiles just won't load outside the world width (-180 to 180 longitude) instead of repeating."
-            "zoomOffset" =% T<int>
+            "zoomOffset" =@ T<int>
             |> WithComment "The zoom number used in tile URLs will be offset with this value."
-            "zoomReverse" =% T<bool>
+            "zoomReverse" =@ T<bool>
             |> WithComment "If set to true, the zoom number used in tile URLs will be reversed (maxZoom - zoom instead of zoom)"
-            "opacity" =% T<float>
+            "opacity" =@ T<float>
             |> WithComment "The opacity of the tile layer."
-            "zIndex" =% T<int>
+            "zIndex" =@ T<int>
             |> WithComment "The explicit zIndex of the tile layer. Not set by default."
-            "unloadInvisibleTiles" =% T<bool>
+            "unloadInvisibleTiles" =@ T<bool>
             |> WithComment "If true, all the tiles that are not visible after panning are removed (for better performance). true by default on mobile WebKit, otherwise false."
-            "updateWhenIdle" =% T<bool>
+            "updateWhenIdle" =@ T<bool>
             |> WithComment "If false, new tiles are loaded during panning, otherwise only after it (for better performance). true by default on mobile WebKit, otherwise false."
-            "detectRetina" =% T<bool>
+            "detectRetina" =@ T<bool>
             |> WithComment "If true and user is on a retina display, it will request four tiles of half the specified size and a bigger zoom level in place of one to utilize the high resolution."
-            "reuseTiles" =% T<bool>
+            "reuseTiles" =@ T<bool>
             |> WithComment "If true, all the tiles that are not visible after panning are placed in a reuse queue from which they will be fetched when new tiles become visible (as opposed to dynamically creating new ones). This will in theory keep memory usage low and eliminate the need for reserving new memory whenever a new tile is needed."
-            "bounds" =% LatLngBounds
+            "bounds" =@ LatLngBounds
             |> WithComment "When this option is set, the TileLayer only loads tiles that are in the given geographical bounds."
         ]
 
     let TileLayerOSM =
         Class "L.TileLayer.OpenStreetMap"
-        |+> [
+        |+> Static [
             "urlTemplate" =? T<string>
             |> WithGetterInline "'http://{s}.tile.osm.org/{z}/{x}/{y}.png'"
             "attribution" =? T<string>
@@ -661,7 +661,7 @@ module Definition =
 
     let TileLayerMapbox =
         Class "L.TileLayer.Mapbox"
-        |+> [
+        |+> Static [
             "urlTemplate" => T<string>?mapId ^-> T<string>
             |> WithInline "'http://{s}.tiles.mapbox.com/v3/'+$mapId+'/{z}/{x}/{y}.png'"
             "attribution" =? T<string>
@@ -673,7 +673,7 @@ module Definition =
         |=> TileLayerT
         |=> Implements [ILayer]
         |=> Nested [TileLayerOptions; TileLayerWMS; TileLayerCanvas; TileLayerOSM; TileLayerMapbox]
-        |+> [
+        |+> Static [
             Constructor (T<string>?urlTemplate * !?TileLayerOptions)
             |> WithComment "Instantiates a tile layer object given a URL template and optionally an options object."
         ]
@@ -684,7 +684,7 @@ module Definition =
             "tileload", TileEvent, "Fired when a tile loads."
             "tileunload", TileEvent, "Fired when a tile is removed (e.g. when you have unloadInvisibleTiles on)."
         ]
-        |+> Protocol [
+        |+> Instance [
             "addTo" => MapT ^-> T<unit>
             |> WithComment "Adds the layer to the map."
             "bringToFront" => T<unit -> unit>
@@ -705,23 +705,23 @@ module Definition =
 
     let ImageOverlayOptions =
         Class "L.ImageOverlay.Options"
-        |+> [Constructor T<unit> |> WithInline "{}"]
-        |+> Protocol [
-            "opacity" =% T<float>
+        |+> Static [Constructor T<unit> |> WithInline "{}"]
+        |+> Instance [
+            "opacity" =@ T<float>
             |> WithComment "The opacity of the image overlay."
-            "attribution" =% T<string>
+            "attribution" =@ T<string>
             |> WithComment "The attribution text of the image overlay."
         ]
 
     let ImageOverlay =
         Class "L.ImageOverlay"
-        |+> [
+        |+> Static [
             Constructor (T<string>?url * LatLngBoundsOrCoords?bounds * !?ImageOverlayOptions)
             |> WithComment "Instantiates an image overlay object given the URL of the image and the geographical bounds it is tied to."
         ]
         |=> Nested [ImageOverlayOptions]
         |=> Implements [ILayer]
-        |+> Protocol [
+        |+> Instance [
             "addTo" => MapT ^-> T<unit>
             |> WithComment "Adds the overlay to the map."
             "setOpacity" => T<float -> unit>
@@ -736,33 +736,33 @@ module Definition =
 
     let PathOptions =
         Class "L.Path.Options"
-        |+> [Constructor T<unit> |> WithInline "{}"]
-        |+> Protocol [
-            "stroke" =% T<bool>
+        |+> Static [Constructor T<unit> |> WithInline "{}"]
+        |+> Instance [
+            "stroke" =@ T<bool>
             |> WithComment "Whether to draw stroke along the path. Set it to false to disable borders on polygons or circles."
-            "color" =% T<string>
+            "color" =@ T<string>
             |> WithComment "Stroke color."
-            "weight" =% T<int>
+            "weight" =@ T<int>
             |> WithComment "Stroke width in pixels."
-            "opacity" =% T<float>
+            "opacity" =@ T<float>
             |> WithComment "Stroke opacity."
-            "fill" =% T<bool>
+            "fill" =@ T<bool>
             |> WithComment "Whether to fill the path with color. Set it to false to disable filling on polygons or circles."
-            "fillColor" =% T<string>
+            "fillColor" =@ T<string>
             |> WithComment "Fill color."
-            "fillOpacity" =% T<float>
+            "fillOpacity" =@ T<float>
             |> WithComment "Fill opacity."
-            "dashArray" =% T<string>
+            "dashArray" =@ T<string>
             |> WithComment "A string that defines the stroke dash pattern. Doesn't work on canvas-powered layers (e.g. Android 2)."
-            "lineCap" =% T<JavaScript.LineCap>
+            "lineCap" =@ T<JavaScript.LineCap>
             |> WithComment "A string that defines shape to be used at the end of the stroke."
-            "lineJoin" =% T<JavaScript.LineJoin>
+            "lineJoin" =@ T<JavaScript.LineJoin>
             |> WithComment "A string that defines shape to be used at the corners of the stroke."
-            "clickable" =% T<bool>
+            "clickable" =@ T<bool>
             |> WithComment "If false, the vector will not emit mouse events and will act as a part of the underlying map."
-            "pointerEvents" =% T<string>
+            "pointerEvents" =@ T<string>
             |> WithComment "Sets the pointer-events attribute on the path if SVG backend is used."
-            "className" =% T<string>
+            "className" =@ T<string>
             |> WithComment "Custom class name set on an element."
         ]
 
@@ -770,7 +770,7 @@ module Definition =
         Class "L.Path"
         |=> Nested [PathOptions]
         |=> Implements [ILayer]
-        |+> Protocol [
+        |+> Instance [
             "addTo" => MapT ^-> T<unit>
             |> WithComment "Adds the layer to the map."
             "bindPopup" => (T<string> + T<Element> + Popup) * !?PopupOptions ^-> T<unit>
@@ -804,7 +804,7 @@ module Definition =
             "popupopen", PopupEvent, "Fired when a popup bound to the path is open."
             "popupclose", PopupEvent, "Fired when a popup bound to the path is closed."
         ]
-        |+> [
+        |+> Static [
             "SVG" =? T<bool>
             |> WithComment "True if SVG is used for vector rendering (true for most modern browsers)."
             "VMS" =? T<bool>
@@ -818,11 +818,11 @@ module Definition =
     let PolylineOptions =
         Class "L.Polyline.Options"
         |=> Inherits PathOptions
-        |+> [Constructor T<unit> |> WithInline "{}"]
-        |+> Protocol [
-            "smoothFactor" =% T<float>
+        |+> Static [Constructor T<unit> |> WithInline "{}"]
+        |+> Instance [
+            "smoothFactor" =@ T<float>
             |> WithComment "How much to simplify the polyline on each zoom level. More means better performance and smoother look, and less means more accurate representation."
-            "noClip" =% T<bool>
+            "noClip" =@ T<bool>
             |> WithComment "Disabled polyline clipping."
         ]
 
@@ -830,11 +830,11 @@ module Definition =
         Class "L.Polyline"
         |=> Nested [PolylineOptions]
         |=> Inherits Path
-        |+> [
+        |+> Static [
             Constructor (Type.ArrayOf LatLngOrCoords * !?PolylineOptions)
             |> WithComment "Instantiates a polyline object given an array of geographical points and optionally an options object."
         ]
-        |+> Protocol [
+        |+> Instance [
             "addLatLng" => LatLngOrCoords ^-> T<unit>
             |> WithComment "Adds a given point to the polyline."
             "setLatLngs" => Type.ArrayOf LatLngOrCoords ^-> T<unit>
@@ -852,11 +852,11 @@ module Definition =
     let MultiPolyline =
         Class "L.MultiPolyline"
         |=> Inherits Polyline
-        |+> [
+        |+> Static [
             Constructor (Type.ArrayOf (Type.ArrayOf LatLngOrCoords) * !?PolylineOptions)
             |> WithComment "Instantiates a multi-polyline object given an array of arrays of geographical points (one for each individual polyline) and optionally an options object."
         ]
-        |+> Protocol [
+        |+> Instance [
             "setLatLngs" => Type.ArrayOf (Type.ArrayOf LatLngOrCoords) ^-> T<unit>
             |> WithComment "Replace all lines and their paths with the given array of arrays of geographical points."
             "getLatLngs" => T<unit> ^-> Type.ArrayOf (Type.ArrayOf LatLngOrCoords)
@@ -870,11 +870,11 @@ module Definition =
     let Polygon =
         Class "L.Polygon"
         |=> Inherits Polyline
-        |+> [
+        |+> Static [
             Constructor (Type.ArrayOf LatLngOrCoords * !?PolylineOptions)
             |> WithComment "Instantiates a polygon object given an array of geographical points and optionally an options object (the same as for Polyline). You can also create a polygon with holes by passing an array of arrays of latlngs, with the first latlngs array representing the exterior ring while the remaining represent the holes inside."
         ]
-        |+> Protocol [
+        |+> Instance [
             "toGeoJSON" => T<unit -> obj>
             |> WithComment "Returns a GeoJSON representation of the polyline (GeoJSON Polygon Feature)."
         ]
@@ -882,11 +882,11 @@ module Definition =
     let MultiPolygon =
         Class "L.MultiPolygon"
         |=> Inherits Polyline
-        |+> [
+        |+> Static [
             Constructor (Type.ArrayOf (Type.ArrayOf LatLngOrCoords) * !?PolylineOptions)
             |> WithComment "Instantiates a multi-polygon object given an array of latlngs arrays (one for each individual polygon) and optionally an options object (the same as for MultiPolyline)."
         ]
-        |+> Protocol [
+        |+> Instance [
             "setLatLngs" => Type.ArrayOf (Type.ArrayOf LatLngOrCoords) ^-> T<unit>
             |> WithComment "Replace all polygons and their paths with the given array of arrays of geographical points."
             "getLatLngs" => T<unit> ^-> Type.ArrayOf (Type.ArrayOf LatLng)
@@ -900,11 +900,11 @@ module Definition =
     let Rectangle =
         Class "L.Rectangle"
         |=> Inherits Polygon
-        |+> [
+        |+> Static [
             Constructor (LatLngBoundsOrCoords * !?PathOptions)
             |> WithComment "Instantiates a rectangle object with the given geographical bounds and optionally an options object."
         ]
-        |+> Protocol [
+        |+> Instance [
             "setBounds" => LatLngBoundsOrCoords ^-> T<unit>
             |> WithComment "Redraws the rectangle with the passed bounds."
         ]
@@ -912,11 +912,11 @@ module Definition =
     let Circle =
         Class "L.Circle"
         |=> Inherits Path
-        |+> [
+        |+> Static [
             Constructor (LatLngOrCoords?latlng * T<float>?radius * !?PathOptions)
             |> WithComment "Instantiates a circle object given a geographical point, a radius in meters and optionally an options object."
         ]
-        |+> Protocol [
+        |+> Instance [
             "getLatLng" => T<unit> ^-> LatLng
             |> WithComment "Returns the current geographical position of the circle."
             "getRadius" => T<unit -> float>
@@ -932,11 +932,11 @@ module Definition =
     let CircleMarker =
         Class "L.CircleMarker"
         |=> Inherits Circle
-        |+> [
+        |+> Static [
             Constructor (LatLngOrCoords * !?PathOptions)
             |> WithComment "Instantiates a circle marker given a geographical point and optionally an options object. The default radius is 10 and can be altered by passing a \"radius\" member in the path options object."
         ]
-        |+> Protocol [
+        |+> Instance [
             "setLatLng" => LatLngOrCoords ^-> T<unit>
             |> WithComment "Sets the position of a circle marker to a new location."
             "setRadius" => T<int -> unit>
@@ -948,11 +948,11 @@ module Definition =
     let LayerGroup =
         Class "L.LayerGroup"
         |=> Implements [ILayer]
-        |+> [
+        |+> Static [
             Constructor (!?(Type.ArrayOf ILayer))
             |> WithComment "Create a layer group, optionally given an initial set of layers."
         ]
-        |+> Protocol [
+        |+> Instance [
             "addTo" => MapT ^-> T<unit>
             |> WithComment "Adds the group of layers to the map."
             "addLayer" => ILayer ^-> T<unit>
@@ -980,11 +980,11 @@ module Definition =
     let FeatureGroup =
         Class "L.FeatureGroup"
         |=> Inherits LayerGroup
-        |+> [
+        |+> Static [
             Constructor (!?(Type.ArrayOf ILayer))
             |> WithComment "Create a layer group, optionally given an initial set of layers."
         ]
-        |+> Protocol [
+        |+> Instance [
             "bindPopup" => T<string>?htmlContent * !?PopupOptions ^-> T<unit>
             |> WithComment "Binds a popup with a particular HTML content to a click on any layer from the group that has a bindPopup method."
             "getBounds" => T<unit> ^-> LatLngBounds
@@ -1012,17 +1012,17 @@ module Definition =
     let GeoJSONOptions =
         Class "L.GeoJSON.Options"
         |=> Inherits PathOptions
-        |+> [Constructor T<unit> |> WithInline "{}"]
-        |+> Protocol [
-            "pointToLayer" =% GeoJSONT * LatLngOrCoords ^-> T<unit>
+        |+> Static [Constructor T<unit> |> WithInline "{}"]
+        |+> Instance [
+            "pointToLayer" =@ GeoJSONT * LatLngOrCoords ^-> T<unit>
             |> WithComment "Function that will be used for creating layers for GeoJSON points (if not specified, simple markers will be created)."
-            "style" =% GeoJSONT ^-> T<unit>
+            "style" =@ GeoJSONT ^-> T<unit>
             |> WithComment "Function that will be used to get style options for vector layers created for GeoJSON features."
-            "onEachFeature" =% GeoJSONT * ILayer ^-> T<unit>
+            "onEachFeature" =@ GeoJSONT * ILayer ^-> T<unit>
             |> WithComment "Function that will be called on each created feature layer. Useful for attaching events and popups to features."
-            "filter" =% GeoJSONT * ILayer ^-> T<bool>
+            "filter" =@ GeoJSONT * ILayer ^-> T<bool>
             |> WithComment "Function that will be used to decide whether to show a feature or not."
-            "coordsToLatLng" =% T<float * float> ^-> LatLng
+            "coordsToLatLng" =@ T<float * float> ^-> LatLng
             |> WithComment "Function that will be used for converting GeoJSON coordinates to LatLng points (if not specified, coords will be assumed to be WGS84 — standard [longitude, latitude] values in degrees)."
         ]
 
@@ -1031,7 +1031,7 @@ module Definition =
         |=> GeoJSONT
         |=> Nested [GeoJSONOptions]
         |=> Inherits FeatureGroup
-        |+> Protocol [
+        |+> Instance [
             "addData" => GeoJSONT ^-> T<unit>
             |> WithComment "Adds a GeoJSON object to the layer."
             "setStyle" => (GeoJSONT ^-> T<unit>) ^-> T<unit>
@@ -1039,7 +1039,7 @@ module Definition =
             "resetStyle" => Path ^-> T<unit>
             |> WithComment "Resets the the given vector layer's style to the original GeoJSON style, useful for resetting style after hover events."
         ]
-        |+> [
+        |+> Static [
             "geometryToLayer" => GeoJSONT * !?(GeoJSONT * LatLngOrCoords ^-> T<unit>) ^-> ILayer
             |> WithComment "Creates a layer from a given GeoJSON feature."
             "coordsToLatLng" => (T<float * float> + T<float[]>) * !?T<bool>?reverse ^-> LatLng
@@ -1068,7 +1068,7 @@ module Definition =
         let ControlPosition = Type.New()
         Class "L.Control.Position"
         |=> ControlPosition
-        |+> [
+        |+> Static [
             "topleft" =? ControlPosition
             "topright" =? ControlPosition
             "bottomleft" =? ControlPosition
@@ -1077,9 +1077,9 @@ module Definition =
 
     let ControlOptions =
         Class "L.Control.Options"
-        |+> [Constructor T<unit> |> WithInline "{}"]
-        |+> Protocol [
-            "position" =% ControlPosition
+        |+> Static [Constructor T<unit> |> WithInline "{}"]
+        |+> Instance [
+            "position" =@ ControlPosition
             |> WithComment "The initial position of the control (one of the map corners)."
         ]
 
@@ -1087,30 +1087,30 @@ module Definition =
 
     let ControlZoomOptions =
         Class "L.Control.Zoom.Options"
-        |+> [Constructor T<unit> |> WithInline "{}"]
-        |+> Protocol [
-            "position" =% ControlPosition
-            "zoomInText" =% T<string>
-            "zoomOutText" =% T<string>
-            "zoomInTitle" =% T<string>
-            "zoomOutTitle" =% T<string>
+        |+> Static [Constructor T<unit> |> WithInline "{}"]
+        |+> Instance [
+            "position" =@ ControlPosition
+            "zoomInText" =@ T<string>
+            "zoomOutText" =@ T<string>
+            "zoomInTitle" =@ T<string>
+            "zoomOutTitle" =@ T<string>
         ]
 
     let ControlZoom =
         Class "L.Control.Zoom"
         |=> Nested [ControlZoomOptions]
         |=> Inherits ControlT
-        |+> [
+        |+> Static [
             Constructor !?ControlZoomOptions
             |> WithComment "Creates a zoom control."
         ]
 
     let ControlAttributionOptions =
         Class "L.Control.Attribution.Options"
-        |+> [Constructor T<unit> |> WithInline "{}"]
-        |+> Protocol [
-            "position" =% ControlPosition
-            "prefix" =% T<string>
+        |+> Static [Constructor T<unit> |> WithInline "{}"]
+        |+> Instance [
+            "position" =@ ControlPosition
+            "prefix" =@ T<string>
             |> WithComment "The HTML text shown before the attributions. Pass false to disable."
         ]
 
@@ -1118,10 +1118,10 @@ module Definition =
         Class "L.Control.Attribution"
         |=> Nested [ControlAttributionOptions]
         |=> Inherits ControlT
-        |+> [
+        |+> Static [
             Constructor !?ControlAttributionOptions
         ]
-        |+> Protocol [
+        |+> Instance [
             "setPrefix" => T<string -> unit>
             "addAttribution" => T<string -> unit>
             "removeAttribution" => T<string -> unit>
@@ -1129,12 +1129,12 @@ module Definition =
 
     let ControlLayersOptions =
         Class "L.Control.Layers.Options"
-        |+> [Constructor T<unit> |> WithInline "{}"]
-        |+> Protocol [
-            "position" =% T<string>
-            "collapsed" =% T<bool>
+        |+> Static [Constructor T<unit> |> WithInline "{}"]
+        |+> Instance [
+            "position" =@ T<string>
+            "collapsed" =@ T<bool>
             |> WithComment "If true, the control will be collapsed into an icon and expanded on mouse hover or touch."
-            "autoZIndex" =% T<bool>
+            "autoZIndex" =@ T<bool>
             |> WithComment "If true, the control will assign zIndexes in increasing order to all of its layers so that the order is preserved when switching them on/off."
         ]
 
@@ -1142,11 +1142,11 @@ module Definition =
         Class "L.Control.Layers"
         |=> Nested [ControlLayersOptions]
         |=> Inherits ControlT
-        |+> [
+        |+> Static [
             Constructor (!?T<obj>?baseLayers * !?T<obj>?overlays * !?ControlLayersOptions)
             |> WithComment "Creates an attribution control with the given layers. Base layers will be switched with radio buttons, while overlays will be switched with checkboxes. Note that all base layers should be passed in the base layers object, but only one should be added to the map during map instantiation."
         ]
-        |+> Protocol [
+        |+> Instance [
             "addBaseLayer" => ILayer * T<string>?name ^-> T<unit>
             |> WithComment "Adds a base layer (radio button entry) with the given name to the control."
             "addOverlay" => ILayer * T<string>?name ^-> T<unit>
@@ -1162,16 +1162,16 @@ module Definition =
 
     let ControlScaleOptions =
         Class "L.Control.Scale.Options"
-        |+> [Constructor T<unit> |> WithInline "{}"]
-        |+> Protocol [
-            "position" =% T<string>
-            "maxWidth" =% T<int>
+        |+> Static [Constructor T<unit> |> WithInline "{}"]
+        |+> Instance [
+            "position" =@ T<string>
+            "maxWidth" =@ T<int>
             |> WithComment "Maximum width of the control in pixels. The width is set dynamically to show round values (e.g. 100, 200, 500)."
-            "metric" =% T<bool>
+            "metric" =@ T<bool>
             |> WithComment "Whether to show the metric scale line (m/km)."
-            "imperial" =% T<bool>
+            "imperial" =@ T<bool>
             |> WithComment "Whether to show the imperial scale line (mi/ft)."
-            "updateWhenIdle" =% T<bool>
+            "updateWhenIdle" =@ T<bool>
             |> WithComment "If true, the control is updated on moveend, otherwise it's always up-to-date (updated on move)."
         ]
 
@@ -1179,7 +1179,7 @@ module Definition =
         Class "L.Control.Scale"
         |=> Nested [ControlScaleOptions]
         |=> Inherits ControlT
-        |+> [
+        |+> Static [
             Constructor !?ControlScaleOptions
         ]
 
@@ -1188,11 +1188,11 @@ module Definition =
         |=> ControlT
         |=> Implements [IControl]
         |=> Nested [ControlOptions; ControlPosition; ControlZoom; ControlAttribution; ControlLayers; ControlScale]
-        |+> [
+        |+> Static [
             Constructor (!?ControlOptions)
             |> WithComment "Creates a control with the given options."
         ]
-        |+> Protocol [
+        |+> Instance [
             "setPosition" => ControlPosition ^-> T<unit>
             |> WithComment "Sets the position of the control."
             "getPosition" => T<unit> ^-> ControlPosition
@@ -1207,148 +1207,148 @@ module Definition =
 
     let LocateOptions =
         Class "L.LocateOptions"
-        |+> [Constructor T<unit> |> WithInline "{}"]
-        |+> Protocol [
-            "watch" =% T<bool>
+        |+> Static [Constructor T<unit> |> WithInline "{}"]
+        |+> Instance [
+            "watch" =@ T<bool>
             |> WithComment "If true, starts continous watching of location changes (instead of detecting it once) using W3C watchPosition method. You can later stop watching using map.stopLocate() method."
-            "setView" =% T<bool>
+            "setView" =@ T<bool>
             |> WithComment "If true, automatically sets the map view to the user location with respect to detection accuracy, or to world view if geolocation failed."
-            "maxZoom" =% T<int>
+            "maxZoom" =@ T<int>
             |> WithComment "The maximum zoom for automatic view setting when using `setView` option."
-            "timeout" =% T<int>
+            "timeout" =@ T<int>
             |> WithComment "Number of milliseconds to wait for a response from geolocation before firing a locationerror event."
-            "maximumAge" =% T<int>
+            "maximumAge" =@ T<int>
             |> WithComment "Maximum age of detected location. If less than this amount of milliseconds passed since last geolocation response, locate will return a cached location."
-            "enableHighAccuracy" =% T<bool>
+            "enableHighAccuracy" =@ T<bool>
             |> WithComment "Enables high accuracy, see description in the W3C spec [http://dev.w3.org/geo/api/spec-source.html#high-accuracy]."
         ]
 
     let PanOptions =
         Class "L.PanOptions"
-        |+> [Constructor T<unit> |> WithInline "{}"]
-        |+> Protocol [
-            "animate" =% T<bool>
+        |+> Static [Constructor T<unit> |> WithInline "{}"]
+        |+> Instance [
+            "animate" =@ T<bool>
             |> WithComment "If true, panning will always be animated if possible. If false, it will not animate panning, either resetting the map view if panning more than a screen away, or just setting a new offset for the map pane (except for `panBy` which always does the latter)."
-            "duration" =% T<float>
+            "duration" =@ T<float>
             |> WithComment "Duration of animated panning."
-            "easeLinearity" =% T<float>
+            "easeLinearity" =@ T<float>
             |> WithComment "The curvature factor of panning animation easing (third parameter of the Cubic Bezier curve). 1.0 means linear animation, the less the more bowed the curve."
-            "noMoveStart" =% T<bool>
+            "noMoveStart" =@ T<bool>
             |> WithComment "If true, panning won't fire movestart event on start (used internally for panning inertia)."
         ]
 
     let ZoomOptions =
         Class "L.ZoomOptions"
-        |+> [Constructor T<unit> |> WithInline "{}"]
-        |+> Protocol [
-            "animate" =% T<bool>
+        |+> Static [Constructor T<unit> |> WithInline "{}"]
+        |+> Instance [
+            "animate" =@ T<bool>
             |> WithComment "If not specified, zoom animation will happen if the zoom origin is inside the current view. If true, the map will attempt animating zoom disregarding where zoom origin is. Setting false will make it always reset the view completely without animation."
         ]
 
     let ZoomPanOptions =
         Class "L.ZoomPanOptions"
-        |+> [Constructor T<unit> |> WithInline "{}"]
-        |+> Protocol [
-            "reset" =% T<bool>
+        |+> Static [Constructor T<unit> |> WithInline "{}"]
+        |+> Instance [
+            "reset" =@ T<bool>
             |> WithComment "If true, the map view will be completely reset (without any animations)."
-            "pan" =% PanOptions
+            "pan" =@ PanOptions
             |> WithComment "Sets the options for the panning (without the zoom change) if it occurs."
-            "zoom" =% ZoomOptions
+            "zoom" =@ ZoomOptions
             |> WithComment "Sets the options for the zoom change if it occurs."
-            "animate" =% T<bool>
+            "animate" =@ T<bool>
             |> WithComment "An equivalent of passing animate to both zoom and pan options (see below)."
         ]
 
     let FitBoundsOptions =
         Class "L.FitBoundsOptions"
-        |+> [Constructor T<unit> |> WithInline "{}"]
-        |+> Protocol [
-            "paddingTopLeft" =% Point
+        |+> Static [Constructor T<unit> |> WithInline "{}"]
+        |+> Instance [
+            "paddingTopLeft" =@ Point
             |> WithComment "Sets the amount of padding in the top left corner of a map container that shouldn't be accounted for when setting the view to fit bounds. Useful if you have some control overlays on the map like a sidebar and you don't want them to obscure objects you're zooming to."
-            "paddingBottomRight" =% Point
+            "paddingBottomRight" =@ Point
             |> WithComment "The same for bottom right corner of the map."
-            "padding" =% Point
+            "padding" =@ Point
             |> WithComment "Equivalent of setting both top left and bottom right padding to the same value."
-            "maxZoom" =% T<int>
+            "maxZoom" =@ T<int>
             |> WithComment "The maximum possible zoom to use."
         ]
 
     let MapOptions =
         Class "L.Map.Options"
-        |+> [Constructor T<unit> |> WithInline "{}"]
-        |+> Protocol [
-            "center" =% LatLng
+        |+> Static [Constructor T<unit> |> WithInline "{}"]
+        |+> Instance [
+            "center" =@ LatLng
             |> WithComment "Initial geographical center of the map."
-            "zoom" =% T<int>
+            "zoom" =@ T<int>
             |> WithComment "Initial map zoom."
-            "layers" =% Type.ArrayOf ILayer
+            "layers" =@ Type.ArrayOf ILayer
             |> WithComment "Layers that will be added to the map initially."
-            "minZoom" =% T<int>
+            "minZoom" =@ T<int>
             |> WithComment "Minimum zoom level of the map. Overrides any minZoom set on map layers."
-            "maxZoom" =% T<int>
+            "maxZoom" =@ T<int>
             |> WithComment "Maximum zoom level of the map. This overrides any maxZoom set on map layers."
-            "maxBounds" =% LatLngBounds
+            "maxBounds" =@ LatLngBounds
             |> WithComment "When this option is set, the map restricts the view to the given geographical bounds, bouncing the user back when he tries to pan outside the view. To set the restriction dynamically, use setMaxBounds method"
-            "crs" =% CRS
+            "crs" =@ CRS
             |> WithComment "Coordinate Reference System to use. Don't change this if you're not sure what it means."
 
-            "dragging" =% T<bool>
+            "dragging" =@ T<bool>
             |> WithComment "Whether the map be draggable with mouse/touch or not."
-            "touchZoom" =% T<bool>
+            "touchZoom" =@ T<bool>
             |> WithComment "Whether the map can be zoomed by touch-dragging with two fingers."
-            "scrollWhellZoom" =% T<bool>
+            "scrollWhellZoom" =@ T<bool>
             |> WithComment "Whether the map can be zoomed by using the mouse wheel. If passed 'center', it will zoom to the center of the view regardless of where the mouse was."
-            "doubleClickZoom" =% T<bool>
+            "doubleClickZoom" =@ T<bool>
             |> WithComment "Whether the map can be zoomed in by double clicking on it and zoomed out by double clicking while holding shift. If passed 'center', double-click zoom will zoom to the center of the view regardless of where the mouse was."
-            "boxZoom" =% T<bool>
+            "boxZoom" =@ T<bool>
             |> WithComment "Whether the map can be zoomed to a rectangular area specified by dragging the mouse while pressing shift."
-            "tap" =% T<bool>
+            "tap" =@ T<bool>
             |> WithComment "Enables mobile hacks for supporting instant taps (fixing 200ms click delay on iOS/Android) and touch holds (fired as contextmenu events)."
-            "tapTolerance" =% T<int>
+            "tapTolerance" =@ T<int>
             |> WithComment "The max number of pixels a user can shift his finger during touch for it to be considered a valid tap."
-            "trackResize" =% T<bool>
+            "trackResize" =@ T<bool>
             |> WithComment "Whether the map automatically handles browser window resize to update itself."
-            "worldCopyJump" =% T<bool>
+            "worldCopyJump" =@ T<bool>
             |> WithComment "With this option enabled, the map tracks when you pan to another \"copy\" of the world and seamlessly jumps to the original one so that all overlays like markers and vector layers are still visible."
-            "closePopupOnClick" =% T<bool>
+            "closePopupOnClick" =@ T<bool>
             |> WithComment "Set it to false if you don't want popups to close when user clicks the map."
-            "bounceAtZoomLimits" =% T<bool>
+            "bounceAtZoomLimits" =@ T<bool>
             |> WithComment "Set it to false if you don't want the map to zoom beyond min/max zoom and then bounce back when pinch-zooming."
 
-            "keyboard" =% T<bool>
+            "keyboard" =@ T<bool>
             |> WithComment "Makes the map focusable and allows users to navigate the map with keyboard arrows and +/- keys."
-            "keyboardPanOffset" =% T<int>
+            "keyboardPanOffset" =@ T<int>
             |> WithComment "Amount of pixels to pan when pressing an arrow key."
-            "keyboardZoomOffset" =% T<int>
+            "keyboardZoomOffset" =@ T<int>
             |> WithComment "Number of zoom levels to change when pressing + or - key."
 
-            "inertia" =% T<bool>
+            "inertia" =@ T<bool>
             |> WithComment "If enabled, panning of the map will have an inertia effect where the map builds momentum while dragging and continues moving in the same direction for some time. Feels especially nice on touch devices."
-            "inertiaDeceleration" =% T<int>
+            "inertiaDeceleration" =@ T<int>
             |> WithComment "The rate with which the inertial movement slows down, in pixels/second^2."
-            "inertiaMaxSpeed" =% T<int>
+            "inertiaMaxSpeed" =@ T<int>
             |> WithComment "Max speed of the inertial movement, in pixels/second."
-            "inertiaThreshold" =% T<int>
+            "inertiaThreshold" =@ T<int>
             |> WithComment "Number of milliseconds that should pass between stopping the movement and releasing the mouse or touch to prevent inertial movement. 32 for touch devices and 14 for the rest by default."
 
-            "zoomControl" =% T<bool>
+            "zoomControl" =@ T<bool>
             |> WithComment "Whether the zoom control is added to the map by default."
-            "attributionControl" =% T<bool>
+            "attributionControl" =@ T<bool>
             |> WithComment "Whether the attribution control is added to the map by default."
 
-            "fadeAnimation" =% T<bool>
+            "fadeAnimation" =@ T<bool>
             |> WithComment "Whether the tile fade animation is enabled. By default it's enabled in all browsers that support CSS3 Transitions except Android."
-            "zoomAnimation" =% T<bool>
+            "zoomAnimation" =@ T<bool>
             |> WithComment "Whether the tile zoom animation is enabled. By default it's enabled in all browsers that support CSS3 Transitions except Android."
-            "zoomAnimationThreshold" =% T<bool>
+            "zoomAnimationThreshold" =@ T<bool>
             |> WithComment "Won't animate zoom if the zoom difference exceeds this value."
-            "markerZoomAnimation" =% T<bool>
+            "markerZoomAnimation" =@ T<bool>
             |> WithComment "Whether markers animate their zoom with the zoom animation, if disabled they will disappear for the length of the animation. By default it's enabled in all browsers that support CSS3 Transitions except Android."
         ]
 
     let MapPanes =
         Class "L.MapPanes"
-        |+> Protocol [
+        |+> Instance [
             "mapPane" =? T<Element>
             |> WithComment "Pane that contains all other map panes."
             "tilePane" =? T<Element>
@@ -1367,27 +1367,27 @@ module Definition =
 
     let MarkerOptions =
         Class "L.Marker.Options"
-        |+> [Constructor T<unit> |> WithInline "{}"]
-        |+> Protocol [
-            "icon" =% Icon
+        |+> Static [Constructor T<unit> |> WithInline "{}"]
+        |+> Instance [
+            "icon" =@ Icon
             |> WithComment "Icon class to use for rendering the marker. See Icon documentation for details on how to customize the marker icon. Set to new L.Icon.Default() by default."
-            "clickable" =% T<bool>
+            "clickable" =@ T<bool>
             |> WithComment "If false, the marker will not emit mouse events and will act as a part of the underlying map."
-            "draggable" =% T<bool>
+            "draggable" =@ T<bool>
             |> WithComment "Whether the marker is draggable with mouse/touch or not."
-            "keyboard" =% T<bool>
+            "keyboard" =@ T<bool>
             |> WithComment "Whether the marker can be tabbed to with a keyboard and clicked by pressing enter."
-            "title" =% T<string>
+            "title" =@ T<string>
             |> WithComment "Text for the browser tooltip that appear on marker hover (no tooltip by default)."
-            "alt" =% T<string>
+            "alt" =@ T<string>
             |> WithComment "Text for the alt attribute of the icon image (useful for accessibility)."
-            "zIndexOffset" =% T<int>
+            "zIndexOffset" =@ T<int>
             |> WithComment "By default, marker images zIndex is set automatically based on its latitude. Use this option if you want to put the marker on top of all others (or below), specifying a high value like 1000 (or high negative value, respectively)."
-            "opacity" =% T<float>
+            "opacity" =@ T<float>
             |> WithComment "The opacity of the marker."
-            "riseOnHover" =% T<bool>
+            "riseOnHover" =@ T<bool>
             |> WithComment "If true, the marker will get on top of others when you hover the mouse over it."
-            "riseOffset" =% T<int>
+            "riseOffset" =@ T<int>
             |> WithComment "The z-index offset used for the riseOnHover feature."
         ]
 
@@ -1395,7 +1395,7 @@ module Definition =
         Class "L.Marker"
         |=> Nested [MarkerOptions]
         |=> Implements [ILayer]
-        |+> [
+        |+> Static [
             Constructor (LatLngOrCoords * !?MarkerOptions)
             |> WithComment "Instantiates a Marker object given a geographical point and optionally an options object."
         ]
@@ -1415,7 +1415,7 @@ module Definition =
             "popupopen", PopupEvent, "Fired when a popup bound to the marker is open."
             "popupclose", PopupEvent, "Fired when a popup bound to the marker is closed."
         ]
-        |+> Protocol [
+        |+> Instance [
             // Methods
             "addTo" => MapT ^-> T<unit>
             |> WithComment "Adds the marker to the map."
@@ -1457,7 +1457,7 @@ module Definition =
         Class "L.Map"
         |=> MapT
         |=> Nested [MapOptions]
-        |+> [
+        |+> Static [
             Constructor ((T<Element> + T<string>)?id * !?MapOptions)
             |> WithComment "Instantiates a map object given a div element (or its id) and optionally an object literal with map options."
         ]
@@ -1497,7 +1497,7 @@ module Definition =
             "popupopen", PopupEvent, "Fired when a popup is opened (using openPopup method)."
             "popupclose", PopupEvent, "Fired when a popup is closed (using closePopup method)."
         ]
-        |+> Protocol [
+        |+> Instance [
             // Methods
             "setView" => LatLngOrCoords?center * !?T<int>?zoom * !?ZoomPanOptions?options ^-> T<unit>
             |> WithComment "Sets the view of the map (geographical center and zoom) with the given animation options."
@@ -1621,7 +1621,7 @@ module Definition =
 
     let Browser =
         Class "L.Browser"
-        |+> [
+        |+> Static [
             "ie" =? T<bool>
             |> WithComment "true for all Internet Explorer versions."
             "ie6" =? T<bool>
