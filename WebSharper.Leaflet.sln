@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
 VisualStudioVersion = 12.0.30110.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "IntelliFactory.WebSharper.Leaflet", "IntelliFactory.WebSharper.Leaflet\IntelliFactory.WebSharper.Leaflet.fsproj", "{5B55F341-00DD-42C5-ADD5-0090CBA1456C}"
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "WebSharper.Leaflet", "WebSharper.Leaflet\WebSharper.Leaflet.fsproj", "{5B55F341-00DD-42C5-ADD5-0090CBA1456C}"
 EndProject
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "IntelliFactory.WebSharper.Leaflet.Tests", "IntelliFactory.WebSharper.Leaflet.Tests\IntelliFactory.WebSharper.Leaflet.Tests.fsproj", "{E4948A76-DB54-4224-AE3B-9E518DF481BD}"
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "WebSharper.Leaflet.Tests", "WebSharper.Leaflet.Tests\WebSharper.Leaflet.Tests.fsproj", "{E4948A76-DB54-4224-AE3B-9E518DF481BD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

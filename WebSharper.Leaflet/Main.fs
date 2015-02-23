@@ -1,10 +1,10 @@
-﻿namespace IntelliFactory.WebSharper.Leaflet
+﻿namespace WebSharper.Leaflet
 
-open IntelliFactory.WebSharper
-open IntelliFactory.WebSharper.JavaScript.Dom
+open WebSharper
+open WebSharper.JavaScript.Dom
 
 module Definition =
-    open IntelliFactory.WebSharper.InterfaceGenerator
+    open WebSharper.InterfaceGenerator
 
     let TileLayerT = Type.New()
     let MapT = Type.New()
@@ -1659,11 +1659,11 @@ module Definition =
 
     let Assembly =
         Assembly [
-            Namespace "IntelliFactory.WebSharper.Leaflet.Resources" [
+            Namespace "WebSharper.Leaflet.Resources" [
                 Res.Css
                 Res.Js
             ]
-            Namespace "IntelliFactory.WebSharper.Leaflet" [
+            Namespace "WebSharper.Leaflet" [
                 LatLng
                 LatLngBounds
                 Point
@@ -1717,7 +1717,7 @@ module Definition =
         ]
         |> Requires [Res.Js]
 
-open IntelliFactory.WebSharper.InterfaceGenerator
+open WebSharper.InterfaceGenerator
 
 [<Sealed>]
 type Extension() =

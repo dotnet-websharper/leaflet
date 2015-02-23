@@ -1,8 +1,8 @@
-namespace IntelliFactory.WebSharper.Leaflet.Tests
+namespace WebSharper.Leaflet.Tests
 
-open IntelliFactory.WebSharper.Html.Server
-open IntelliFactory.WebSharper
-open IntelliFactory.WebSharper.Sitelets
+open WebSharper.Html.Server
+open WebSharper
+open WebSharper.Sitelets
 
 type Action =
     | Home

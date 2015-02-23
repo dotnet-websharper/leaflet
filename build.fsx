@@ -6,11 +6,11 @@ let bt =
         .References(fun r -> [r.Assembly "System.Web"])
 
 let main =
-    bt.WebSharper.Extension("IntelliFactory.WebSharper.Leaflet")
+    bt.WebSharper.Extension("WebSharper.Leaflet")
         .SourcesFromProject()
 
 let test =
-    bt.WebSharper.HtmlWebsite("IntelliFactory.WebSharper.Leaflet.Tests")
+    bt.WebSharper.HtmlWebsite("WebSharper.Leaflet.Tests")
         .SourcesFromProject()
         .References(fun r -> [r.Project main])
 
