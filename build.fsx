@@ -2,7 +2,9 @@
 open IntelliFactory.Build
 
 let bt =
-    BuildTool().PackageId("WebSharper.Leaflet", "3.0")
+    BuildTool().PackageId("WebSharper.Leaflet")
+        .VersionFrom("WebSharper")
+        .WithFramework(fun fw -> fw.Net40)
         .References(fun r -> [r.Assembly "System.Web"])
 
 let main =
