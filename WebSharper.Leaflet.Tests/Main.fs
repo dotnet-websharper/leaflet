@@ -31,17 +31,17 @@ module Skin =
             .With("title", fun x -> x.Title)
             .With("body", fun x -> x.Body)
 
-    let WithTemplate title body : Content<Action> =
-        Content.WithTemplate MainTemplate <| fun context ->
+    let WithTemplate title body : Async<Content<Action>> =
+        Content.WithTemplate MainTemplate
             {
                 Title = title
-                Body = body context
+                Body = body
             }
 
 module Site =
 
-    let HomePage =
-        Skin.WithTemplate "Leaflet maps" <| fun ctx ->
+    let HomePage ctx =
+        Skin.WithTemplate "Leaflet maps"
             [
                 Div [new Controls.EntryPoint()]
             ]
