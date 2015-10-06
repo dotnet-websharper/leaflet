@@ -4,6 +4,7 @@ open IntelliFactory.Build
 let bt =
     BuildTool().PackageId("WebSharper.Leaflet")
         .VersionFrom("WebSharper")
+        .WithFSharpVersion(FSharpVersion.FSharp30)
         .WithFramework(fun fw -> fw.Net40)
         .References(fun r -> [r.Assembly "System.Web"])
 
@@ -14,7 +15,11 @@ let main =
 let test =
     bt.WebSharper.HtmlWebsite("WebSharper.Leaflet.Tests")
         .SourcesFromProject()
-        .References(fun r -> [r.Project main])
+        .References(fun r ->
+            [
+                r.Project main
+                r.NuGet("WebSharper.Html").Reference()
+            ])
 
 bt.Solution [
     main
