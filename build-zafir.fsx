@@ -23,7 +23,7 @@ let test =
 
 bt.Solution [
     main
-    test
+//    test
 
     bt.NuGet.CreatePackage()
         .Configure(fun c ->
