@@ -18,7 +18,7 @@ let test =
         .References(fun r ->
             [
                 r.Project main
-                r.NuGet("Zafir.Html").Reference()
+                r.NuGet("Zafir.Html").Latest(true).ForceFoundVersion().Reference()
             ])
 
 bt.Solution [
