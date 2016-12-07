@@ -271,9 +271,10 @@ module Definition =
 
     let ICRS =
         Interface "L.ICRS"
-        |+> [
+        |+> (
+            [
             "latLngToPoint" => LatLngOrCoords * T<int>?zoom ^-> Point
-            |> WithComment "Projects geographical coordinates on a given zoom into pixel coordinates."
+            |> WithComment "Projects geographical coordinates on a given zoom into pixel coordinates." 
             "pointToLatLng" => PointOrCoords * T<int>?zoom ^-> LatLng
             |> WithComment "The inverse of latLngToPoint. Projects pixel coordinates on a given zoom into geographical coordinates."
             "project" => LatLngOrCoords ^-> Point
@@ -289,7 +290,7 @@ module Definition =
             |> WithComment "Transformation that this CRS uses to turn projected coordinates into screen coordinates for a particular tile service."
             "code" =? T<string>
             |> WithComment "Standard code name of the CRS passed into WMS services (e.g. 'EPSG:3857')."
-        ]
+        ] : list<CodeModel.IInterfaceMember>)
 
     let CRS =
         Class "L.CRS"
