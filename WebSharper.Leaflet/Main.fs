@@ -478,14 +478,14 @@ module Definition =
             ])
         |+> Instance (events |> List.collect (fun (name, data, descr) ->
             [
-                ("on_" + name) => (cls ^-> data ^-> T<unit>)?fn ^-> T<unit>
-                |> WithInline ("$this.on('" + name + "', $wsruntime.CreateFuncWithThis($fn))")
+                ("on_" + name) => (cls * data ^-> T<unit>)?fn ^-> T<unit>
+                |> WithInline ("$this.on('" + name + "', function(x){$fn(this,x)})")
                 |> WithComment descr
-                ("once_" + name) => (cls ^-> data ^-> T<unit>)?fn ^-> T<unit>
-                |> WithInline ("$this.once('" + name + "', $wsruntime.CreateFuncWithThis($fn))")
+                ("once_" + name) => (cls * data ^-> T<unit>)?fn ^-> T<unit>
+                |> WithInline ("$this.once('" + name + "', function(x){$fn(this,x)})")
                 |> WithComment descr
-                ("off_" + name) => (cls ^-> data ^-> T<unit>)?fn ^-> T<unit>
-                |> WithInline ("$this.off('" + name + "', $wsruntime.CreateFuncWithThis($fn))")
+                ("off_" + name) => (cls * data ^-> T<unit>)?fn ^-> T<unit>
+                |> WithInline ("$this.off('" + name + "', function(x){$fn(this,x)})")
                 |> WithComment descr
                 ("off_" + name) => T<unit> ^-> T<unit>
                 |> WithInline ("$this.off('" + name + "')")

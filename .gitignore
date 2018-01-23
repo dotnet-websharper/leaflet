@@ -4,3 +4,7 @@ packages/
 *.suo
 bin/
 obj/
+/.fake/
+/paket-files/
+/.vscode/
+WebSharper.Leaflet.Tests/Content/
