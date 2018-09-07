@@ -655,18 +655,18 @@ module Definition =
         Class "L.TileLayer.OpenStreetMap"
         |+> Static [
             "urlTemplate" =? T<string>
-            |> WithGetterInline "'http://{s}.tile.osm.org/{z}/{x}/{y}.png'"
+            |> WithGetterInline "'https://{s}.tile.osm.org/{z}/{x}/{y}.png'"
             "attribution" =? T<string>
-            |> WithGetterInline """'&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>'"""
+            |> WithGetterInline """'&copy; <a href="https://osm.org/copyright">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>'"""
         ]
 
     let TileLayerMapbox =
         Class "L.TileLayer.Mapbox"
         |+> Static [
             "urlTemplate" => T<string>?mapId ^-> T<string>
-            |> WithInline "'http://{s}.tiles.mapbox.com/v3/'+$mapId+'/{z}/{x}/{y}.png'"
+            |> WithInline "'https://{s}.tiles.mapbox.com/v3/'+$mapId+'/{z}/{x}/{y}.png'"
             "attribution" =? T<string>
-            |> WithGetterInline """'Map data &copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery &copy; <a href="http://mapbox.com/">Mapbox</a>'"""
+            |> WithGetterInline """'Map data &copy; <a href="https://osm.org/copyright">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery &copy; <a href="https://mapbox.com/">Mapbox</a>'"""
         ]
 
     let TileLayer =
@@ -1221,7 +1221,7 @@ module Definition =
             "maximumAge" =@ T<int>
             |> WithComment "Maximum age of detected location. If less than this amount of milliseconds passed since last geolocation response, locate will return a cached location."
             "enableHighAccuracy" =@ T<bool>
-            |> WithComment "Enables high accuracy, see description in the W3C spec [http://dev.w3.org/geo/api/spec-source.html#high-accuracy]."
+            |> WithComment "Enables high accuracy, see description in the W3C spec [https://dev.w3.org/geo/api/spec-source.html#high-accuracy]."
         ]
 
     let PanOptions =
@@ -1653,9 +1653,9 @@ module Definition =
 
     module Res =
         let Css =
-            Resource "Css" "http://cdn.leafletjs.com/leaflet-0.7.2/leaflet.css"
+            Resource "Css" "https://cdn.leafletjs.com/leaflet-0.7.2/leaflet.css"
         let Js =
-            Resource "Js" "http://cdn.leafletjs.com/leaflet-0.7.2/leaflet.js"
+            Resource "Js" "https://cdn.leafletjs.com/leaflet-0.7.2/leaflet.js"
             |> Requires [Css]
 
     let Assembly =
