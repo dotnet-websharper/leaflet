@@ -16,6 +16,6 @@ files
     ../WebSharper.Leaflet/bin/Release/netstandard2.0/WebSharper.Leaflet.dll ==> lib/netstandard2.0
     ../WebSharper.Leaflet/bin/Release/netstandard2.0/WebSharper.Leaflet.xml ==> lib/netstandard2.0
 dependencies
-        WebSharper ~> 4.5.19
+        WebSharper ~> 4.6.0
 frameworkAssemblies
         System.Web
