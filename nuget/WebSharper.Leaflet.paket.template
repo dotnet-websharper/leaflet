@@ -11,11 +11,10 @@ description
 tags
     Web JavaScript F# C#
 files
-    ../WebSharper.Leaflet/bin/Release/net461/WebSharper.Leaflet.dll ==> lib/net461
-    ../WebSharper.Leaflet/bin/Release/net461/WebSharper.Leaflet.xml ==> lib/net461
     ../WebSharper.Leaflet/bin/Release/netstandard2.0/WebSharper.Leaflet.dll ==> lib/netstandard2.0
     ../WebSharper.Leaflet/bin/Release/netstandard2.0/WebSharper.Leaflet.xml ==> lib/netstandard2.0
 dependencies
-        WebSharper ~> LOCKEDVERSION:[3]
+    framework: netstandard2.0
+            WebSharper ~> LOCKEDVERSION:[3]
 frameworkAssemblies
         System.Web
