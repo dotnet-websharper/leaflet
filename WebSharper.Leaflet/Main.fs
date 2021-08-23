@@ -39,7 +39,7 @@ module Definition =
     let LatLng =
         let x = T<float>?longitude
         Class "L.LatLng"
-        // |=> LatLngT
+        |=> LatLngT
         |+> Static [
             Constructor (T<float>?latitude * T<float>?longitude * !? T<float>?altitude)
             |> WithComment "Creates an object representing a geographical point with the given latitude and longitude (and optionally altitude)."
@@ -75,7 +75,7 @@ module Definition =
 
     let LatLngBounds =
         Class "L.LatLngBounds"
-        // |=> LatLngBoundsT
+        |=> LatLngBoundsT
         |+> Static [
             Constructor (LatLng?corner1 * LatLng?corner2)
             |> WithComment "Creates a LatLngBounds object by defining two diagonally opposite corners of the rectangle."
@@ -120,7 +120,7 @@ module Definition =
 
     let Point =
         Class "L.Point"
-        // |=> PointT
+        |=> PointT
         |+> Static [
             Constructor (T<float>?x * T<float>?y * !? T<bool>)
             |> WithComment "Creates a Point object with the given x and y coordinates. If optional round is set to true, rounds the x and y values."
@@ -172,7 +172,7 @@ module Definition =
     let Bounds =
         let Bounds = Type.New()
         Class "L.Bounds"
-        // |=> Bounds
+        |=> Bounds
         |+> Static [
             Constructor (PointOrCoords?corner1 * PointOrCoords?corner2)
             |> WithComment "Creates a Bounds object from two corners coordinate pairs."
@@ -240,7 +240,7 @@ module Definition =
 
     let Icon =
         Class "L.Icon"
-        // |=> Nested [IconOptions]
+        |=> Nested [IconOptions]
         |+> Static [
             Constructor IconOptions
             |> WithComment "Creates an icon instance with the given options."
@@ -273,8 +273,8 @@ module Definition =
 
     let DivIcon =
         Class "L.DivIcon"
-        // |=> Nested [DivIconOptions]
-        // |=> Inherits Icon
+        |=> Nested [DivIconOptions]
+        |=> Inherits Icon
         |+> Static [
             Constructor DivIconOptions
             |> WithComment "Creates a div icon instance with the given options."
@@ -443,14 +443,14 @@ module Definition =
 
     let KeyboardEvent =
         Class "L.KeyboardEvent"
-        // |=> Inherits Event
+        |=> Inherits Event
         |+> Instance [
             "originalEvent" =? T<Element>
         ]
 
     let MouseEvent =
         Class "L.MouseEvent"
-        // |=> Inherits Event
+        |=> Inherits Event
         |+> Instance [
             "latlng" =? LatLng
             |> WithComment "The geographical point where the mouse event occured."
@@ -464,7 +464,7 @@ module Definition =
 
     let LocationEvent =
         Class "L.LocationEvent"
-        // |=> Inherits Event
+        |=> Inherits Event
         |+> Instance [
             "latlng" =? LatLng
             |> WithComment "Detected geographical location of the user."
@@ -486,7 +486,7 @@ module Definition =
 
     let ErrorEvent =
         Class "L.ErrorEvent"
-        // |=> Inherits Event
+        |=> Inherits Event
         |+> Instance [
             "message" =? T<string>
             |> WithComment "Error message."
@@ -496,7 +496,7 @@ module Definition =
 
     let LayerEvent =
         Class "L.LayerEvent"
-        // |=> Inherits Event
+        |=> Inherits Event
         |+> Instance [
             "layer" =? ILayer
             |> WithComment "The layer that was added or removed."
@@ -504,7 +504,7 @@ module Definition =
 
     let LayersControlEvent =
         Class "L.LayersControlEvent"
-        // |=> Inherits Event
+        |=> Inherits Event
         |+> Instance [
             "layer" =? ILayer
             |> WithComment "The layer that was added or removed."
@@ -514,7 +514,7 @@ module Definition =
 
     let TileEvent =
         Class "L.TileEvent"
-        // |=> Inherits Event
+        |=> Inherits Event
         |+> Instance [
             "tile" =? T<Element>
             |> WithComment "The tile element (image)."
@@ -524,7 +524,7 @@ module Definition =
 
     let TileErrorEvent =
         Class "L.TileErrorEvent"
-        // |=> Inherits Event
+        |=> Inherits Event
         |+> Instance [
             "tile" =? T<Element>
             |> WithComment "The tile element (image)."
@@ -535,7 +535,7 @@ module Definition =
 
     let ResizeEvent =
         Class "L.ResizeEvent"
-        // |=> Inherits Event
+        |=> Inherits Event
         |+> Instance [
             "oldSize" =? Point
             |> WithComment "The old size before resize event."
@@ -545,7 +545,7 @@ module Definition =
 
     let GeoJSONEvent =
         Class "L.GeoJSONEvent"
-        // |=> Inherits Event
+        |=> Inherits Event
         |+> Instance [
             "layer" =? ILayer
             |> WithComment "The layer for the GeoJSON feature that is being added to the map."
@@ -559,7 +559,7 @@ module Definition =
 
     let PopupEvent =
         Class "L.PopupEvent"
-        // |=> Inherits Event
+        |=> Inherits Event
         |+> Instance [
             "popup" =? PopupT
             |> WithComment "The popup that was opened or closed."
@@ -567,7 +567,7 @@ module Definition =
 
     let TooltipEvent =
         Class "L.TooltipEvent"
-        // |=> Inherits Event
+        |=> Inherits Event
         |+> Instance [
             "tooltip" =? TooltipT
             |> WithComment "The tooltip that was opened or closed."
@@ -575,7 +575,7 @@ module Definition =
 
     let DragEndEvent =
         Class "L.DragEndEvent"
-        // |=> Inherits Event
+        |=> Inherits Event
         |+> Instance [
             "distance" =? T<int>
             |> WithComment "The distance in pixels the draggable element was moved by."
@@ -583,7 +583,7 @@ module Definition =
 
     let ZoomAnimEvent =
         Class "L.ZoomAnimEvent"
-        // |=> Inherits Event
+        |=> Inherits Event
         |+> Instance [
             "center" =? LatLng
             |> WithComment "The current center of the map"
@@ -593,7 +593,7 @@ module Definition =
             |> WithComment "Whether layers should update their contents due to this event"
         ]
 
-    let DOMEvent =
+   (*  let DOMEvent =
         Class "L.DomEvent"
         |+> Static [
             "on" => T<Element> * T<obj> * !? T<obj> ^-> T<unit>
@@ -681,7 +681,7 @@ module Definition =
             "TRANSITION-END" =? T<string>
             |> WithComment "Vendor-prefixed transitionend event name."
         ]
-
+*)
     let WithEvents events cls : CodeModel.Class =
         cls
         |+> (
@@ -736,8 +736,8 @@ module Definition =
                 ("fire_" + name) => data ^-> T<unit>
                 |> WithInline ("$this.fire('" + name + "')")
                 |> WithComment descr
-            ]))
-
+            ]))  
+   
     let LayerOptions =
         Class "L.Layer.Options"
         |+> Static [Constructor T<unit> |> WithInline "{}"]
@@ -750,8 +750,8 @@ module Definition =
 
     let Layer =
         Class "L.Layer"
-        // |=> Inherits LayerOptions
-        // |=> IEvented
+        |=> Inherits LayerOptions
+        |=> IEvented
         |+> Static []
         |> WithEvents [
             "add", Event, "Fired after the layer is added to a map"
@@ -801,7 +801,7 @@ module Definition =
 
     let RendererOptions =
         Class "L.Renderer.Options"
-        // |=> Inherits Layer
+        |=> Inherits Layer
         |+> Static [Constructor T<unit> |> WithInline "{}"]
         |+> Instance [
             "padding" =@ T<float>
@@ -812,7 +812,7 @@ module Definition =
 
     let Renderer =
         Class "L.Renderer"
-        // |=> Inherits RendererOptions
+        |=> Inherits RendererOptions
         |+> Static []
         |> WithEvents [
             "update", Event, "Fired when the renderer updates its bounds, center and zoom, for example when its map has moved"
@@ -821,7 +821,7 @@ module Definition =
 
     let InteractiveLayerOptions =
         Class "L.InteractiveLayer.Options"
-        // |=> Inherits Layer
+        |=> Inherits Layer
         |+> Static [Constructor T<unit> |> WithInline "{}"]
         |+> Instance [
             "interactive" =@ T<bool>
@@ -833,7 +833,7 @@ module Definition =
 
     let InteractiveLayer =
         Class "L.InteractiveLayer"
-        // |=> Inherits InteractiveLayerOptions
+        |=> Inherits InteractiveLayerOptions
         |+> Static []
         |> WithEvents [
             "click", MouseEvent, "Fired when the user clicks (or taps) the layer."
@@ -859,7 +859,7 @@ module Definition =
 
     let DivOverlay =
         Class "L.DivOverlay"
-        // |=> Inherits DivOverlayOptions
+        |=> Inherits DivOverlayOptions
 
     let Handler =
         Class "L.Handler"
@@ -882,7 +882,7 @@ module Definition =
         ]
 
     let TooltipOptions =
-        Class "L.Tooltip.Options"
+        Class "L.TooltipOptions"
         |+> Static [Constructor T<unit> |> WithInline "{}"]
         |+> Instance [
             "pane" =@ T<string>
@@ -903,9 +903,9 @@ module Definition =
 
     let Tooltip =
         Class "L.Tooltip"
-        // |=> Nested [TooltipOptions]
-        // |=> Implements [ILayer]
-        // |=> TooltipT
+        |=> Nested [TooltipOptions]
+        |=> Implements [ILayer]
+        |=> TooltipT
         |+> Static [
             Constructor (!?TooltipOptions * !?ILayer?source)
             |> WithComment "Instantiates a Popup object given an optional options object that describes its appearance and location and an optional source object that is used to tag the popup with a reference to the ILayer to which it refers."
@@ -944,7 +944,7 @@ module Definition =
         ]
 
     let PopupOptions =
-        Class "L.Popup.Options"
+        Class "L.PopupOptions"
         |+> Static [Constructor T<unit> |> WithInline "{}"]
         |+> Instance [
             "maxWidth" =@ T<int>
@@ -985,9 +985,9 @@ module Definition =
 
     let Popup =
         Class "L.Popup"
-        // |=> Nested [PopupOptions]
-        // |=> Implements [ILayer]
-        // |=> PopupT
+        |=> Nested [PopupOptions]
+        |=> Implements [ILayer]
+        |=> PopupT
         |+> Static [
             Constructor (!?PopupOptions * !?ILayer?source)
             |> WithComment "Instantiates a Popup object given an optional options object that describes its appearance and location and an optional source object that is used to tag the popup with a reference to the ILayer to which it refers."
@@ -1045,8 +1045,8 @@ module Definition =
 
     let TileLayerWMS =
         Class "L.TileLayer.WMS"
-        // |=> Nested [TileLayerWMSOptions]
-        // |=> Inherits TileLayerT
+        |=> Nested [TileLayerWMSOptions]
+        |=> Inherits TileLayerT
         |+> Static [
             Constructor (T<string>?baseUrl * !?TileLayerWMSOptions)
             |> WithComment "Instantiates a WMS tile layer object given a base URL of the WMS service and a WMS parameters/options object."
@@ -1066,8 +1066,8 @@ module Definition =
 
     let TileLayerCanvas =
         Class "L.TileLayer.Canvas"
-        // |=> Nested [TileLayerCanvasOptions]
-        // |=> Inherits TileLayerT
+        |=> Nested [TileLayerCanvasOptions]
+        |=> Inherits TileLayerT
         |+> Static [
             Constructor (!?TileLayerCanvasOptions)
             |> WithComment "Instantiates a Canvas tile layer object given an options object (optionally)."
@@ -1146,9 +1146,9 @@ module Definition =
 
     let TileLayer =
         Class "L.TileLayer"
-        // |=> TileLayerT
-        // |=> Implements [ILayer]
-        // |=> Nested [TileLayerOptions; TileLayerWMS; TileLayerCanvas; TileLayerOSM; TileLayerMapbox]
+        |=> TileLayerT
+        |=> Implements [ILayer]
+        |=> Nested [TileLayerOptions; TileLayerWMS; TileLayerCanvas; TileLayerOSM; TileLayerMapbox]
         |+> Static [
             Constructor (T<string>?urlTemplate * !?TileLayerOptions)
             |> WithComment "Instantiates a tile layer object given a URL template and optionally an options object."
@@ -1188,13 +1188,13 @@ module Definition =
             |> WithComment "Returns true if any tile in the grid layer has not finished loading."
             "getTileSize" => T<unit> ^-> Point 
             |> WithComment "Normalizes the tileSize option into a point. Used by the createTile() method."
-            "bindPopup" => (T<string> + T<Element> + Popup) * !?PopupOptions ^-> T<unit>
+            "bindPopup" => (T<string> + T<Element> + PopupT) * !?PopupOptions ^-> T<unit>
             |> WithComment "Binds a popup with a particular HTML content to a click on this marker. You can also open the bound popup with the Marker openPopup method."
             "unbindPopup" => T<unit -> unit>
             |> WithComment "Unbinds the popup previously bound to the marker with bindPopup."
             "openPopup" => T<unit -> unit>
             |> WithComment "Opens the popup previously bound by the bindPopup method."
-            "getPopup" => T<unit> ^-> Popup
+            "getPopup" => T<unit> ^-> PopupT
             |> WithComment "Returns the popup previously bound by the bindPopup method."
             "closePopup" => T<unit -> unit>
             |> WithComment "Closes the bound popup of the marker if it's opened."
@@ -1216,7 +1216,7 @@ module Definition =
             |> WithComment "Returns the HTMLElement representing the named pane on the map. If name is omitted, returns the pane for this layer."
             "getAttribution" => T<unit> ^-> T<string>
             |> WithComment "Used by the attribution control, returns the attribution option."
-            "bindTooltip" => (T<string> + T<Element> + Popup) * !?TooltipOptions ^-> T<unit>
+            //"bindTooltip" => (T<string> + T<Element> + PopupT) * !?TooltipOptions ^-> T<unit>
             |> WithComment "Binds a tooltip to the layer with the passed content and sets up the necessary event listeners. If a Function is passed it will receive the layer as the first argument and should return a String or HTMLElement."
             "unbindTooltip" => T<unit> ^-> T<unit>
             |> WithComment "Removes the tooltip previously bound with bindTooltip."
@@ -1228,9 +1228,9 @@ module Definition =
             |> WithComment "Opens or closes the tooltip bound to this layer depending on its current state."
             "isTooltipOpen" => T<unit> ^-> T<bool>
             |> WithComment "Returns true if the tooltip bound to this layer is currently open."
-            "setTooltipContent" => T<string> + T<Element> + Tooltip ^-> T<unit>
+            "setTooltipContent" => T<string> + T<Element> + TooltipT ^-> T<unit>
             |> WithComment "Sets the content of the tooltip bound to this layer."
-            "getTooltip" => T<unit> ^-> Tooltip
+            "getTooltip" => T<unit> ^-> TooltipT
             |> WithComment "Returns the tooltip bound to this layer."            
         ]
 
@@ -1250,8 +1250,8 @@ module Definition =
             Constructor (T<string>?url * LatLngBoundsOrCoords?bounds * !?ImageOverlayOptions)
             |> WithComment "Instantiates an image overlay object given the URL of the image and the geographical bounds it is tied to."
         ]
-        // |=> Nested [ImageOverlayOptions]
-        // |=> Implements [ILayer]
+        |=> Nested [ImageOverlayOptions]
+        |=> Implements [ILayer]
         |+> Instance [
             "addTo" => MapT ^-> T<unit>
             |> WithComment "Adds the overlay to the map."
@@ -1266,7 +1266,7 @@ module Definition =
         ]
 
     let PathOptions =
-        Class "L.Path.Options"
+        Class "L.PathOptions"
         |+> Static [Constructor T<unit> |> WithInline "{}"]
         |+> Instance [
             "stroke" =@ T<bool>
@@ -1279,8 +1279,6 @@ module Definition =
             |> WithComment "Stroke opacity."
             "lineCap" =@ T<string>
             |> WithComment "A string that defines shape to be used at the end of the stroke."
-            "lineJoin" =@ T<string>
-            |> WithComment "A string that defines shape to be used at the corners of the stroke."
             "fill" =@ T<bool>
             |> WithComment "Whether to fill the path with color. Set it to false to disable filling on polygons or circles."
             "fillColor" =@ T<string>
@@ -1289,8 +1287,6 @@ module Definition =
             |> WithComment "Fill opacity."
             "dashArray" =@ T<string>
             |> WithComment "A string that defines the stroke dash pattern. Doesn't work on canvas-powered layers (e.g. Android 2)."
-            "lineCap" =@ T<JavaScript.LineCap>
-            |> WithComment "A string that defines shape to be used at the end of the stroke."
             "lineJoin" =@ T<JavaScript.LineJoin>
             |> WithComment "A string that defines shape to be used at the corners of the stroke."
             "clickable" =@ T<bool>
@@ -1311,12 +1307,12 @@ module Definition =
 
     let Path =
         Class "L.Path"
-        // |=> Nested [PathOptions]
-        // |=> Implements [ILayer]
+        |=> Nested [PathOptions]
+        |=> Implements [ILayer]
         |+> Instance [
             "addTo" => MapT ^-> T<unit>
             |> WithComment "Adds the layer to the map."
-            "bindPopup" => (T<string> + T<Element> + Popup) * !?PopupOptions ^-> T<unit>
+            "bindPopup" => (T<string> + T<Element> + PopupT) * !?PopupOptions ^-> T<unit>
             |> WithComment "Binds a popup with a particular HTML content to a click on this path."
             "unbindPopup" => T<unit -> unit>
             |> WithComment "Binds a given popup object to the path."
@@ -1357,10 +1353,10 @@ module Definition =
             "CLIP_PADDING" =? T<float>
             |> WithComment "How much to extend the clip area around the map view (relative to its size, e.g. 0.5 is half the screen in each direction). Smaller values mean that you will see clipped ends of paths while you're dragging the map, and bigger values decrease drawing performance."
         ]
-
+ 
     let PolylineOptions =
         Class "L.Polyline.Options"
-        // |=> Inherits PathOptions
+        |=> Inherits PathOptions
         |+> Static [Constructor T<unit> |> WithInline "{}"]
         |+> Instance [
             "smoothFactor" =@ T<float>
@@ -1371,8 +1367,8 @@ module Definition =
 
     let Polyline =
         Class "L.Polyline"
-        // |=> Nested [PolylineOptions]
-        // |=> Inherits Path
+        |=> Nested [PolylineOptions]
+        |=> Inherits Path
         |+> Static [
             Constructor (Type.ArrayOf LatLngOrCoords * !?PolylineOptions)
             |> WithComment "Instantiates a polyline object given an array of geographical points and optionally an options object."
@@ -1394,7 +1390,7 @@ module Definition =
 
     let MultiPolyline =
         Class "L.MultiPolyline"
-        // |=> Inherits Polyline
+        |=> Inherits Polyline
         |+> Static [
             Constructor (Type.ArrayOf (Type.ArrayOf LatLngOrCoords) * !?PolylineOptions)
             |> WithComment "Instantiates a multi-polyline object given an array of arrays of geographical points (one for each individual polyline) and optionally an options object."
@@ -1422,7 +1418,7 @@ module Definition =
 
     let Polygon =
         Class "L.Polygon"
-        // |=> Inherits Polyline
+        |=> Inherits Polyline
         |+> Static [
             Constructor (Type.ArrayOf LatLngOrCoords * !?PolylineOptions)
             |> WithComment "Instantiates a polygon object given an array of geographical points and optionally an options object (the same as for Polyline). You can also create a polygon with holes by passing an array of arrays of latlngs, with the first latlngs array representing the exterior ring while the remaining represent the holes inside."
@@ -1434,7 +1430,7 @@ module Definition =
 
     let MultiPolygon =
         Class "L.MultiPolygon"
-        // |=> Inherits Polyline
+        |=> Inherits Polyline
         |+> Static [
             Constructor (Type.ArrayOf (Type.ArrayOf LatLngOrCoords) * !?PolylineOptions)
             |> WithComment "Instantiates a multi-polygon object given an array of latlngs arrays (one for each individual polygon) and optionally an options object (the same as for MultiPolyline)."
@@ -1452,7 +1448,7 @@ module Definition =
 
     let Rectangle =
         Class "L.Rectangle"
-        // |=> Inherits Polygon
+        |=> Inherits Polygon
         |+> Static [
             Constructor (LatLngBounds * !?PolylineOptions)
             |> WithComment "Instantiates a rectangle object with the given geographical bounds and optionally an options object."
@@ -1464,7 +1460,7 @@ module Definition =
 
     let CircleOptions =
         Class "L.Circle.Options"
-        // |=> Inherits Path
+        |=> Inherits Path
         |+> Static [Constructor T<unit> |> WithInline "{}"]
         |+> Instance [
             "radius" =@ T<int>
@@ -1473,7 +1469,7 @@ module Definition =
 
     let Circle =
         Class "L.Circle"
-        // |=> Inherits CircleOptions
+        |=> Inherits CircleOptions
         |+> Static [
             Constructor (LatLngOrCoords?latlng * !? T<float>?radius * !? CircleOptions)
             |> WithComment "Instantiates a circle object given a geographical point, a radius in meters and optionally an options object."
@@ -1493,9 +1489,9 @@ module Definition =
             |> WithComment "Returns the LatLngBounds of the path."
         ]
 
-    let CircleMarkerOptions =
+   (*  let CircleMarkerOptions =
         Class "L.CircleMarker.Options"
-        // |=> Inherits PathOptions
+        |=> Inherits PathOptions
         |+> Static [Constructor T<unit> |> WithInline "{}"]
         |+> Instance [
             "radius" =@ T<int>
@@ -1504,7 +1500,7 @@ module Definition =
 
     let CircleMarker =
         Class "L.CircleMarker"
-        // |=> Inherits CircleMarkerOptions
+        |=> Inherits CircleMarkerOptions
         |+> Static [
             Constructor (LatLngOrCoords * !? CircleMarkerOptions)
             |> WithComment "Instantiates a circle marker given a geographical point and optionally an options object. The default radius is 10 and can be altered by passing a \"radius\" member in the path options object."
@@ -1524,10 +1520,10 @@ module Definition =
             "toGeoJSON" => T<unit -> obj>
             |> WithComment "Returns a GeoJSON representation of the circle marker (GeoJSON Point Feature)."
         ]
-
+ *)
     let LayerGroup =
         Class "L.LayerGroup"
-        // |=> Implements [ILayer]
+        |=> Implements [ILayer]
         |+> Static [
             Constructor (!? !| ILayer * !? T<obj>)
             |> WithComment "Create a layer group, optionally given an initial set of layers."
@@ -1563,7 +1559,7 @@ module Definition =
 
     let FeatureGroup =
         Class "L.FeatureGroup"
-        // |=> Inherits LayerGroup
+        |=> Inherits LayerGroup
         |+> Static [
             Constructor (!? !| ILayer * !? T<obj>)
             |> WithComment "Create a layer group, optionally given an initial set of layers."
@@ -1581,10 +1577,10 @@ module Definition =
 
 
     let GeoJSONT = Type.New()
-
+(* 
     let GeoJSONOptions =
         Class "L.GeoJSON.Options"
-        // |=> Inherits PathOptions
+        |=> Inherits PathOptions
         |+> Static [Constructor T<unit> |> WithInline "{}"]
         |+> Instance [
             "pointToLayer" =@ GeoJSONT * LatLngOrCoords ^-> T<unit>
@@ -1603,9 +1599,9 @@ module Definition =
 
     let GeoJSON =
         Class "L.GeoJSON"
-        // |=> GeoJSONT
-        // |=> Nested [GeoJSONOptions]
-        // |=> Inherits GeoJSONOptions
+        |=> GeoJSONT
+        |=> Nested [GeoJSONOptions]
+        |=> Inherits GeoJSONOptions
         |+> Instance [
             "addData" => GeoJSONT ^-> T<unit>
             |> WithComment "Adds a GeoJSON object to the layer."
@@ -1646,10 +1642,10 @@ module Definition =
             "asFeature" => T<obj> ^-> T<obj>
             |> WithComment "Normalize GeoJSON geometries/features into GeoJSON features."
         ]
-
+ *)
     let GridLayerOptions =
         Class "L.GridLayer.Options"
-        // |=> Inherits PathOptions
+        |=> Inherits PathOptions
         |+> Static [Constructor T<unit> |> WithInline "{}"]
         |+> Instance [
             "tileSize" =@ T<int> + Point
@@ -1686,14 +1682,14 @@ module Definition =
 
     let GridLayer =
         Class "L.GridLayer"
-        // |=> Inherits GridLayerOptions
+        |=> Inherits GridLayerOptions
         |+> Static [
             Constructor (!? GridLayerOptions)
             |> WithComment "Create a layer group, optionally given an initial set of layers."
         ]
         |+> Instance [
-            //"getBounds" => T<unit> ^-> LatLngBounds
-            //|> WithComment "Returns the LatLngBounds of the Feature Group (created from bounds and coordinates of its children)."
+            "getBounds" => T<unit> ^-> LatLngBounds
+            |> WithComment "Returns the LatLngBounds of the Feature Group (created from bounds and coordinates of its children)."
             "bringToFront" => T<unit> ^-> T<unit>
             |> WithComment "Brings the tile layer to the top of all tile layers."
             "bringToBack" => T<unit> ^-> T<unit>
@@ -1724,7 +1720,7 @@ module Definition =
     let ControlPosition =
         let ControlPosition = Type.New()
         Class "L.Control.Position"
-        // |=> ControlPosition
+        |=> ControlPosition
         |+> Static [
             "topleft" =? ControlPosition
             "topright" =? ControlPosition
@@ -1732,13 +1728,13 @@ module Definition =
             "bottomright" =? ControlPosition
         ]
 
-    let ControlOptions =
+    (* let ControlOptions =
         Class "L.Control.Options"
         |+> Static [Constructor T<unit> |> WithInline "{}"]
         |+> Instance [
             "position" =@ ControlPosition
             |> WithComment "The initial position of the control (one of the map corners)."
-        ]
+        ] *)
 
     let ControlT = Type.New()
 
@@ -1754,8 +1750,8 @@ module Definition =
 
     let ControlZoom =
         Class "L.Control.Zoom"
-        // |=> Nested [ControlZoomOptions]
-        // |=> Inherits ControlT
+        |=> Nested [ControlZoomOptions]
+        |=> Inherits ControlT
         |+> Static [
             Constructor !?ControlZoomOptions
             |> WithComment "Creates a zoom control."
@@ -1771,8 +1767,8 @@ module Definition =
 
     let ControlAttribution =
         Class "L.Control.Attribution"
-        // |=> Nested [ControlAttributionOptions]
-        // |=> Inherits ControlT
+        |=> Nested [ControlAttributionOptions]
+        |=> Inherits ControlT
         |+> Static [
             Constructor !?ControlAttributionOptions
         ]
@@ -1800,8 +1796,8 @@ module Definition =
 
     let ControlLayers =
         Class "L.Control.Layers"
-        // |=> Nested [ControlLayersOptions]
-        // |=> Inherits ControlT
+        |=> Nested [ControlLayersOptions]
+        |=> Inherits ControlT
         |+> Static [
             Constructor (!?T<obj>?baseLayers * !?T<obj>?overlays * !?ControlLayersOptions)
             |> WithComment "Creates an attribution control with the given layers. Base layers will be switched with radio buttons, while overlays will be switched with checkboxes. Note that all base layers should be passed in the base layers object, but only one should be added to the map during map instantiation."
@@ -1835,17 +1831,17 @@ module Definition =
 
     let ControlScale =
         Class "L.Control.Scale"
-        // |=> Nested [ControlScaleOptions]
-        // |=> Inherits ControlT
+        |=> Nested [ControlScaleOptions]
+        |=> Inherits ControlT
         |+> Static [
             Constructor !? ControlScaleOptions
         ]
 
-    let Control =
+    (* let Control =
         Class "L.Control"
-        // |=> ControlT
-        // |=> Implements [IControl]
-        // |=> Nested [ControlOptions; ControlPosition; ControlZoom; ControlAttribution; ControlLayers; ControlScale]
+        |=> ControlT
+        |=> Implements [IControl]
+        |=> Nested [ControlOptions; ControlPosition; ControlZoom; ControlAttribution; ControlLayers; ControlScale]
         |+> Static [
             Constructor (!?ControlOptions)
             |> WithComment "Creates a control with the given options."
@@ -1866,7 +1862,7 @@ module Definition =
             "onRemove" => MapT ^-> T<unit>
             |> WithComment "Optional method. Should contain all clean up code that removes the listeners previously added in onAdd. Called on control.remove()."
         ]
-
+ *)
     let LocateOptions =
         Class "L.LocateOptions"
         |+> Static [Constructor T<unit> |> WithInline "{}"]
@@ -2053,7 +2049,7 @@ module Definition =
             |> WithComment "Pane for Tooltips."
         ]
 
-    let MarkerOptions =
+    (* let MarkerOptions =
         Class "L.Marker.Options"
         |+> Static [Constructor T<unit> |> WithInline "{}"]
         |+> Instance [
@@ -2095,8 +2091,8 @@ module Definition =
 
     let Marker =
         Class "L.Marker"
-        // |=> Nested [MarkerOptions]
-        // |=> Implements [ILayer]
+        |=> Nested [MarkerOptions]
+        |=> Implements [ILayer]
         |+> Static [
             Constructor (LatLngOrCoords * !?MarkerOptions)
             |> WithComment "Instantiates a Marker object given a geographical point and optionally an options object."
@@ -2139,19 +2135,19 @@ module Definition =
             |> WithComment "Changes the opacity of the marker."
             "update" => T<unit -> unit>
             |> WithComment "Updates the marker position, useful if coordinates of its latLng object were changed directly."
-            "bindPopup" => (T<string> + T<Element> + Popup) * !?PopupOptions ^-> T<unit>
+            //"bindPopup" => (T<string> + T<Element> + Popup) * !?PopupOptions ^-> T<unit>
             |> WithComment "Binds a popup with a particular HTML content to a click on this marker. You can also open the bound popup with the Marker openPopup method."
             "unbindPopup" => T<unit -> unit>
             |> WithComment "Unbinds the popup previously bound to the marker with bindPopup."
             "openPopup" => T<unit -> unit>
             |> WithComment "Opens the popup previously bound by the bindPopup method."
-            "getPopup" => T<unit> ^-> Popup
+            //"getPopup" => T<unit> ^-> Popup
             |> WithComment "Returns the popup previously bound by the bindPopup method."
             "closePopup" => T<unit -> unit>
             |> WithComment "Closes the bound popup of the marker if it's opened."
             "togglePopup" => T<unit -> unit>
             |> WithComment "Toggles the popup previously bound by the bindPopup method."
-            "setPopupContent" => (T<string> + T<Element>) * !?PopupOptions ^-> T<unit>
+            //"setPopupContent" => (T<string> + T<Element>) * !?PopupOptions ^-> T<unit>
             |> WithComment "Sets an HTML content of the popup of this marker."
             "isPopupOpen"=> T<unit> ^-> T<bool>
             |> WithComment "Returns true if the popup bound to this layer is currently open."
@@ -2169,7 +2165,7 @@ module Definition =
             |> WithComment "Returns the HTMLElement representing the named pane on the map. If name is omitted, returns the pane for this layer."
             "getAttribution" => T<unit> ^-> T<string>
             |> WithComment "Used by the attribution control, returns the attribution option."
-            "bindTooltip" => (T<string> + T<Element> + Popup) * !?TooltipOptions ^-> T<unit>
+            //"bindTooltip" => (T<string> + T<Element> + Popup) * !?TooltipOptions ^-> T<unit>
             |> WithComment "Binds a tooltip to the layer with the passed content and sets up the necessary event listeners. If a Function is passed it will receive the layer as the first argument and should return a String or HTMLElement."
             "unbindTooltip" => T<unit> ^-> T<unit>
             |> WithComment "Removes the tooltip previously bound with bindTooltip."
@@ -2181,20 +2177,20 @@ module Definition =
             |> WithComment "Opens or closes the tooltip bound to this layer depending on its current state."
             "isTooltipOpen" => T<unit> ^-> T<bool>
             |> WithComment "Returns true if the tooltip bound to this layer is currently open."
-            "setTooltipContent" => T<string> + T<Element> + Tooltip ^-> T<unit>
+            //"setTooltipContent" => T<string> + T<Element> + Tooltip ^-> T<unit>
             |> WithComment "Sets the content of the tooltip bound to this layer."
-            "getTooltip" => T<unit> ^-> Tooltip
+            //"getTooltip" => T<unit> ^-> Tooltip
             |> WithComment "Returns the tooltip bound to this layer."
             
             // Properties
             "dragging" =? IHandler
             |> WithComment "Marker dragging handler (by both mouse and touch)."
-        ]
+        ] *)
 
-    let Map =
+(*     let Map =
         Class "L.Map"
-        // |=> MapT
-        // |=> Nested [MapOptions]
+        |=> MapT
+        |=> Nested [MapOptions]
         |+> Static [
             Constructor ((T<Element> + T<string>)?id * !?MapOptions)
             |> WithComment "Instantiates a map object given a div element (or its id) and optionally an object literal with map options."
@@ -2404,7 +2400,7 @@ module Definition =
             "attributionControl" =? ControlAttribution
             |> WithComment "Attribution control."
         ]
-
+ *)
     let Browser =
         Class "L.Browser"
         |+> Static [
@@ -2542,7 +2538,7 @@ module Definition =
 
     let PosAnimation =
         Class "L.PosAnimation"
-        // |=> Inherits IEvented
+        |=> Inherits IEvented
         |+> Static [
             Constructor(T<unit>)
             |> WithComment "Creates a PosAnimation object."
@@ -2569,7 +2565,7 @@ module Definition =
 
     let Draggable =
         Class "L.Draggable"
-        // |=> Inherits IEvented
+        |=> Inherits IEvented
         |+> Static [
             Constructor (T<Element> * !? T<Element> * !? T<bool> * !? DraggableOptions)
         ]
@@ -2600,11 +2596,11 @@ module Definition =
             |> WithComment "Adds a constructor hook to the class."
         ]
 
-    let Evented =
+(*     let Evented =
         Class "L.Evented"
-        // |=> IEvented
+        |=> IEvented
         |+> Static []
-        |+> Instance [(* 
+        |+> Instance [
             "on" => T<obj> ^-> T<unit>
             |> WithComment "Adds a set of type/listener pairs, e.g. {click: onClick, mousemove: onMouseMove}"
             "off" => T<obj> ^-> T<unit>
@@ -2632,8 +2628,8 @@ module Definition =
             "fireEvent" => T<string> * !? T<obj> * !? T<bool> ^-> T<unit>
             |> WithComment "Alias to fire(…)"
             "hasEventListeners" => T<string> ^-> T<bool>
-            |> WithComment "Alias to listens(…)" *)         
-        ]
+            |> WithComment "Alias to listens(…)"
+        ] *)
 
     module Res =
         let Css =
@@ -2684,28 +2680,35 @@ module Definition =
                 MultiPolygon
                 Rectangle
                 Circle
-                CircleMarker
+                //CircleMarker
                 LayerGroup
                 FeatureGroup
-                GeoJSON
-                Control
+                //GeoJSON
+                //Control
                 LocateOptions
                 PanOptions
                 ZoomOptions
                 ZoomPanOptions
                 FitBoundsOptions
                 MapPanes
-                Marker
-                Map
+                //Marker
+                //Map
                 Browser
                 Tooltip
                 TooltipEvent
                 Renderer
                 RendererOptions
-                Evented
+                //Evented
                 ZoomAnimEvent
                 KeyboardEvent
-                CircleMarkerOptions
+                //CircleMarkerOptions
+                //MarkerOptions
+                //ControlOptions
+                //GeoJSONOptions
+                PathOptions
+                Layer
+                PopupOptions
+                TooltipOptions
             ]
         ]
         |> Requires [Res.Js]
