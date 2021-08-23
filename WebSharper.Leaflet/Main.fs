@@ -41,8 +41,12 @@ module Definition =
         Class "L.LatLng"
         |=> LatLngT
         |+> Static [
-            Constructor (T<float>?latitude * T<float>?longitude * !?T<float>?altitude)
+            Constructor (T<float>?latitude * T<float>?longitude * !? T<float>?altitude)
             |> WithComment "Creates an object representing a geographical point with the given latitude and longitude (and optionally altitude)."
+            Constructor (!| (T<int> * T<int> * !? T<int>))
+            |> WithComment "Expects an array of the form [Number, Number] or [Number, Number, Number] instead."
+            Constructor (T<obj>)
+            |> WithComment "Expects an plain object of the form {lat: Number, lng: Number} or {lat: Number, lng: Number, alt: Number} instead."
             "DEG_TO_RAD" =? T<float>
             |> WithComment "A multiplier for converting degrees into radians."
             "RAD_TO_DEG" =? T<float>
@@ -55,30 +59,30 @@ module Definition =
             |> WithComment "Latitude in degrees."
             "lng" =? T<float>
             |> WithComment "Longitude in degrees."
+            "alt" =? T<float>
+            |> WithComment "Altitude in meters (optional)"
 
-            "distanceTo" => LatLngOrCoords ^-> T<float>
-            |> WithComment "Returns the distance (in meters) to the given LatLng calculated using the Haversine formula. See description on wikipedia"
+            "distanceTo" => LatLngOrCoords * !? T<int> ^-> T<float>
+            |> WithComment "Returns true if the given LatLng point is at the same position (within a small margin of error). The margin of error can be overridden by setting maxMargin to a small number."
             "equals" => LatLngOrCoords ^-> T<bool>
             |> WithComment "Returns true if the given LatLng point is at the same position (within a small margin of error)."
             "toString" => T<unit -> string>
             |> WithComment "Returns a string representation of the point (for debugging purposes)."
-            "wrap" => T<float>?left * T<float>?right ^-> LatLngT
-            |> WithComment "Returns a new LatLng object with the longitude wrapped around left and right boundaries (-180 to 180 by default)."
             "wrap" => T<unit> ^-> LatLngT
             |> WithComment "Returns a new LatLng object with the longitude wrapped around left and right boundaries (-180 to 180 by default)."
+            "toBounds" => T<float> ^-> LatLngBoundsOrCoords
         ]
 
     let LatLngBounds =
         Class "L.LatLngBounds"
         |=> LatLngBoundsT
         |+> Static [
-            Constructor (LatLngOrCoords?southWest * LatLngOrCoords?northEast)
-            |> WithComment "Creates a latLngBounds object by defining south-west and north-east corners of the rectangle."
-            Constructor (Type.ArrayOf LatLngOrCoords)
-            |> WithComment "Creates a LatLngBounds object defined by the geographical points it contains. Very useful for zooming the map to fit a particular set of locations with fitBounds."
-        ]
+            Constructor (LatLng?corner1 * LatLng?corner2)
+            |> WithComment "Creates a LatLngBounds object by defining two diagonally opposite corners of the rectangle."
+            Constructor (!| LatLng)
+            |> WithComment "Creates a LatLngBounds object defined by the geographical points it contains. Very useful for zooming the map to fit a particular set of locations with fitBounds."        ]
         |+> Instance [
-            "extend" => (LatLngOrCoords + LatLngBoundsOrCoords) ^-> T<unit>
+            "extend" => (LatLng + LatLngBoundsT) ^-> T<unit>
             |> WithComment "Extends the bounds to contain the given point or bounds."
             "getSouthWest" => T<unit> ^-> LatLng
             |> WithComment "Returns the south-west point of the bounds."
@@ -110,16 +114,30 @@ module Definition =
             |> WithComment "Returns bigger bounds created by extending the current bounds by a given percentage in each direction."
             "isValid" => T<unit -> bool>
             |> WithComment "Returns true if the bounds are properly initialized."
+            "getCenter" => T<unit> ^-> LatLng
+            |> WithComment "Returns the center point of the bounds."
+            "overlaps" => LatLngBoundsOrCoords ^-> T<bool>
+            |> WithComment "Returns true if the rectangle overlaps the given bounds. Two bounds overlap if their intersection is an area."
+            "toBBoxString" => T<unit> ^-> T<string>
+            |> WithComment "Returns a string with bounding box coordinates in a 'southwest_lng,southwest_lat,northeast_lng,northeast_lat' format. Useful for sending requests to web services that return geo data."
+            "equals" => LatLngBoundsOrCoords * !? T<int> ^-> T<bool>
+            |> WithComment "Returns true if the rectangle is equivalent (within a small margin of error) to the given bounds. The margin of error can be overridden by setting maxMargin to a small number."
+            "isValid" => T<unit> ^-> T<bool>
+            |> WithComment "Returns true if the bounds are properly initialized."
         ]
 
     let Point =
         Class "L.Point"
         |=> PointT
         |+> Static [
-            Constructor (T<float>?x * T<float>?y)
-            |> WithComment "Creates a Point object with the given x and y coordinates. Rounds the x and y values."
-            Constructor (T<int>?x * T<int>?y)
-            |> WithComment "Creates a Point object with the given x and y coordinates."
+            Constructor (T<float>?x * T<float>?y * !? T<bool>)
+            |> WithComment "Creates a Point object with the given x and y coordinates. If optional round is set to true, rounds the x and y values."
+            Constructor (T<int>?x * T<int>?y * !? T<bool>)
+            |> WithComment "Creates a Point object with the given x and y coordinates. If optional round is set to true, rounds the x and y values."
+            Constructor (!| T<int> + !| T<float>)
+            |> WithComment "Expects an array of the form [x, y] instead."
+            Constructor (T<obj>)
+            |> WithComment "Expects a plain object of the form {x: Number, y: Number} instead." 
         ]
         |+> Instance [
             "x" =? T<int>
@@ -147,8 +165,20 @@ module Definition =
             |> WithComment "Returns true if the given point has the same coordinates."
             "contains" => PointOrCoords ^-> T<bool>
             |> WithComment "Returns true if the both coordinates of the given point are less than the corresponding current point coordinates (in absolute values)."
-            "toString" => T<unit -> string>
+            "toString" => T<unit> ^-> T<string>
             |> WithComment "Returns a string representation of the point for debugging purposes."
+            "scaleBy" => PointT ^-> PointT
+            |> WithComment "Multiply each coordinate of the current point by each coordinate of scale. In linear algebra terms, multiply the point by the scaling matrix defined by scale."
+            "unscaleBY" => PointT ^-> PointT
+            |> WithComment "Inverse of scaleBy. Divide each coordinate of the current point by each coordinate of scale."
+            "round" => T<unit> ^-> PointT
+            |> WithComment "Returns a copy of the current point with rounded coordinates."
+            "floor" => T<unit> ^-> PointT
+            |> WithComment "Returns a copy of the current point with floored coordinates (rounded down)."
+            "ceil" => T<unit> ^-> PointT
+            |> WithComment "Returns a copy of the current point with ceiled coordinates (rounded up)."
+            "trunc" => T<unit> ^-> PointT
+            |> WithComment "Returns a copy of the current point with truncated coordinates (rounded towards zero)."
         ]
 
     let Bounds =
@@ -156,8 +186,9 @@ module Definition =
         Class "L.Bounds"
         |=> Bounds
         |+> Static [
-            Constructor (PointOrCoords?topLeft * PointOrCoords?bottomRight)
-            |> WithComment "Creates a Bounds object from two coordinates (usually top-left and bottom-right corners)."
+            Constructor (PointOrCoords?corner1 * PointOrCoords?corner2)
+            |> WithComment "Creates a Bounds object from two corners coordinate pairs."
+            Constructor (!| PointOrCoords)
         ]
         |+> Instance [
             "min" =? Point
@@ -179,6 +210,16 @@ module Definition =
             |> WithComment "Returns true if the bounds are properly initialized."
             "getSize" => T<unit> ^-> Point
             |> WithComment "Returns the size of the given bounds."
+            "getBottomLeft" => T<unit> ^-> Point
+            |> WithComment "Returns the bottom-left point of the bounds."
+            "getTopRight" => T<unit> ^-> Point
+            |> WithComment "Returns the top-right point of the bounds."
+            "getTopLeft" => T<unit> ^-> Point
+            |> WithComment "Returns the top-left point of the bounds (i.e. this.min)."
+            "getBottomRight" => T<unit> ^-> Point
+            |> WithComment "Returns the bottom-right point of the bounds (i.e. this.max)."
+            "overlaps" => Bounds ^-> T<bool>
+            |> WithComment "Returns true if the rectangle overlaps the given bounds. Two bounds overlap if their intersection is an area."
         ]
 
     let IconOptions =
@@ -205,6 +246,8 @@ module Definition =
             |> WithComment "The coordinates of the point from which popups will \"open\", relative to the icon anchor."
             "className" =@ T<string>
             |> WithComment "A custom class name to assign to both icon and shadow images. Empty by default."
+            "tooltipAnchor" =@ Point
+            |> WithComment "The coordinates of the point from which tooltips will open, relative to the icon anchor."
         ]
 
     let Icon =
@@ -213,6 +256,15 @@ module Definition =
         |+> Static [
             Constructor IconOptions
             |> WithComment "Creates an icon instance with the given options."
+        ]
+        |+> Instance [
+            "imagePath" =? T<string>
+            |> WithComment "Icon.Default will try to auto-detect the location of the blue icon images. If you are placing these images in a non-standard way, set this option to point to the right path."
+            
+            "createIcon" => !? T<Element> ^-> T<Element>
+            |> WithComment "Called internally when the icon has to be shown, returns a <img> HTML element styled according to the options."
+            "createShadow" => !? T<Element> ^-> T<Element>
+            |> WithComment "As createIcon, but for the shadow beneath it."
         ]
 
     let DivIconOptions =
@@ -227,6 +279,8 @@ module Definition =
             |> WithComment "A custom class name to assign to the icon. 'leaflet-div-icon' by default."
             "html" =@ T<string>
             |> WithComment "A custom HTML code to put inside the div element, empty by default."
+            "bgPos" =@ Point
+            |> WithComment "Optional relative position of the background, in pixels."
         ]
 
     let DivIcon =
@@ -243,11 +297,14 @@ module Definition =
         |> WithComment "Represents an affine transformation: a set of coefficients a, b, c, d for transforming a point of a form (x, y) into (a*x + b, c*y + d) and doing the reverse. Used by Leaflet in its projections code."
         |+> Static [
             Constructor (T<float>?a * T<float>?b * T<float>?c * T<float>?d)
+            |> WithComment "Instantiates a Transformation object with the given coefficients."
+            Constructor (!| T<obj>)
+            |> WithComment "Expects an coefficients array of the form [a: Number, b: Number, c: Number, d: Number]."
         ]
         |+> Instance [
-            "transform" => PointOrCoords * T<float>?scale ^-> Point
+            "transform" => PointOrCoords * !? T<float>?scale ^-> Point
             |> WithComment "Returns a transformed point, optionally multiplied by the given scale. Only accepts real L.Point instances, not arrays."
-            "untransform" => PointOrCoords * T<float>?scale ^-> Point
+            "untransform" => PointOrCoords * !? T<float>?scale ^-> Point
             |> WithComment "Returns the reverse transformation of the given point, optionally divided by the given scale. Only accepts real L.Point instances, not arrays."
         ]
 
@@ -472,6 +529,95 @@ module Definition =
         |+> Instance [
             "distance" =? T<int>
             |> WithComment "The distance in pixels the draggable element was moved by."
+        ]
+
+    let DOMEvent =
+        Class "L.DomEvent"
+        |+> Static [
+            "on" => T<Element> * T<obj> * !? T<obj> ^-> T<unit>
+            |> WithComment "Adds a set of type/listener pairs, e.g. {click: onClick, mousemove: onMouseMove}"
+            "off" => T<Element> * T<obj> * !? T<obj> ^-> T<unit>
+            |> WithComment "Removes a set of type/listener pairs, e.g. {click: onClick, mousemove: onMouseMove}"
+            "stopProgapation" => TSelf ^-> T<unit>
+            |> WithComment "Stop the given event from propagation to parent elements. Used inside the listener functions."
+            "disableScrollPropagation" => T<Element> ^-> T<unit>
+            |> WithComment "Adds stopPropagation to the element's 'wheel' events (plus browser variants)."
+            "disableClickPropagation" => T<Element> ^-> T<unit>
+            |> WithComment "Adds stopPropagation to the element's 'click', 'doubleclick', 'mousedown' and 'touchstart' events (plus browser variants)."
+            "preventDefault" => TSelf ^-> T<unit>
+            |> WithComment "Prevents the default action of the DOM Event ev from happening (such as following a link in the href of the a element, or doing a POST request with page reload when a <form> is submitted). Use it inside listener functions."
+            "stop" => TSelf ^-> T<unit>
+            |> WithComment "Does stopPropagation and preventDefault at the same time."
+            "getMousePosition" => TSelf * !? T<Element> ^-> Point
+            |> WithComment "Gets normalized mouse position from a DOM event relative to the container (border excluded) or to the whole page if not specified."
+            "getWheelDelta" => TSelf ^-> T<int>
+            |> WithComment "Gets normalized wheel delta from a wheel DOM event, in vertical pixels scrolled (negative if scrolling down). Events from pointing devices without precise scrolling are mapped to a best guess of 60 pixels."
+            "addlistener" => T<Element> * T<obj> * !? T<obj> ^-> T<unit>
+            |> WithComment "Alias to L.DomEvent.on"
+            "removeListener" => T<Element> * T<obj> * !? T<obj> ^-> T<unit>
+            |> WithComment "Alias to L.DomEvent.off"
+        ] 
+
+    let DOMUtil =
+        Class "L.DomUtil"
+        |+> Static [
+            "get" => T<string> + T<Element> ^-> T<Element>
+            |> WithComment "Returns an element given its DOM id, or returns the element itself if it was passed directly."
+            "getStyle" => T<Element> * T<string> T<string>
+            |> WithComment "Returns the value for a certain style attribute on an element, including computed values or values set through CSS."
+            "create" => T<string> * !? T<string> * !? T<Element> ^-> T<Element>
+            |> WithComment "Creates an HTML element with tagName, sets its class to className, and optionally appends it to container element."
+            "remove" => T<Element> ^-> T<unit>
+            |> WithComment "Removes el from its parent element"
+            "empty" => T<Element> ^-> T<unit>
+            |> WithComment "Removes all of el's children elements from el"
+            "toFront" => T<Element> ^-> T<unit>
+            |> WithComment "Makes el the last child of its parent, so it renders in front of the other children."
+            "toBack" => T<Element> ^-> T<unit>
+            |> WithComment "Makes el the first child of its parent, so it renders behind the other children."
+            "hasClass" => T<Element> * T<string> ^-> T<bool>
+            |> WithComment "Returns true if the element's class attribute contains name."
+            "addClass" => T<Element> * T<string> ^-> T<bool>
+            |> WithComment "Adds name to the element's class attribute."
+            "removeClass" => T<Element> * T<string> ^-> T<bool>
+            |> WithComment "Removes name from the element's class attribute."
+            "setClass" => T<Element> * T<string> ^-> T<bool>
+            |> WithComment "Sets the element's class."
+            "getClass" => T<Element> ^-> T<string>
+            |> WithComment "Returns the element's class."
+            "setOpacity" => T<Element> * T<float> ^-> T<unit>
+            |> WithComment "Set the opacity of an element (including old IE support). opacity must be a number from 0 to 1."
+            "testProp" => !| T<string> ^-> T<string> + T<bool>
+            |> WithComment "Goes through the array of style names and returns the first name that is a valid style name for an element. If no such name is found, it returns false. Useful for vendor-prefixed styles like transform."
+            "setTransform" => T<Element> * Point * !? T<int>
+            |> WithComment "Resets the 3D CSS transform of el so it is translated by offset pixels and optionally scaled by scale. Does not have an effect if the browser doesn't support 3D CSS transforms."
+            "setPosition" => T<Element> * Point ^-> T<unit>
+            |> WithComment "Sets the position of el to coordinates specified by position, using CSS translate or top/left positioning depending on the browser (used by Leaflet internally to position its layers)."
+            "getPosition" => T<Element> ^-> Point
+            |> WithComment "Returns the coordinates of an element previously positioned with setPosition."
+            "disableTextSelection" => T<unit> ^-> T<unit>
+            |> WithComment "Prevents the user from generating selectstart DOM events, usually generated when the user drags the mouse through a page with text. Used internally by Leaflet to override the behaviour of any click-and-drag interaction on the map. Affects drag interactions on the whole document."
+            "enableTextSelection" => T<unit> ^-> T<unit>
+            |> WithComment "Cancels the effects of a previous L.DomUtil.disableTextSelection."
+            "disableImageDrag" => T<unit> ^-> T<unit>
+            |> WithComment "As L.DomUtil.disableTextSelection, but for dragstart DOM events, usually generated when the user drags an image."
+            "enableImageDrag" => T<unit> ^-> T<unit>
+            |> WithComment "Cancels the effects of a previous L.DomUtil.disableImageDrag."
+            "preventOutline" => T<Element> ^-> T<unit>
+            |> WithComment "Makes the outline of the element el invisible. Used internally by Leaflet to prevent focusable elements from displaying an outline when the user performs a drag interaction on them."
+            "restoreOutline" => T<unit> ^-> T<unit>
+            |> WithComment "Cancels the effects of a previous L.DomUtil.preventOutline."
+            "getSizedParentNode" => T<Element> ^-> T<Element>
+            |> WithComment "Finds the closest parent node which size (width and height) is not null."
+            "getScale" => T<Element> ^-> T<obj>
+            |> WithComment "Computes the CSS scale currently applied on the element. Returns an object with x and y members as horizontal and vertical scales respectively, and boundingClientRect as the result of getBoundingClientRect()."
+        
+            "TRANSFORM" =? T<string>
+            |> WithComment "Vendor-prefixed transform style name (e.g. 'webkitTransform' for WebKit)."
+            "TRANSITION" =? T<string>
+            |> WithComment "Vendor-prefixed transition style name."
+            "TRANSITION-END" =? T<string>
+            |> WithComment "Vendor-prefixed transitionend event name."
         ]
 
     let WithEvents events cls : CodeModel.Class =
@@ -1383,9 +1529,32 @@ module Definition =
         |+> Instance [
             //"getBounds" => T<unit> ^-> LatLngBounds
             //|> WithComment "Returns the LatLngBounds of the Feature Group (created from bounds and coordinates of its children)."
+            "bringToFront" => T<unit> ^-> T<unit>
+            |> WithComment "Brings the tile layer to the top of all tile layers."
+            "bringToBack" => T<unit> ^-> T<unit>
+            |> WithComment "Brings the tile layer to the bottom of all tile layers."
+            "getContainer" => T<unit> ^-> T<Element>
+            |> WithComment "Returns the HTML element that contains the tiles for this layer."
+            "setOpacity" => T<float> ^-> T<unit>
+            |> WithComment "Changes the opacity of the grid layer."
+            "setZIndex" => T<int> ^-> T<unit>
+            |> WithComment "Changes the zIndex of the grid layer."
+            "isLoading" => T<unit> ^-> T<bool>
+            |> WithComment "Returns true if any tile in the grid layer has not finished loading."
+            "redraw" => T<unit> ^-> T<unit>
+            |> WithComment "Causes the layer to clear all the tiles and request them again."
+            "getTileSize" => T<unit> ^-> Point
+            |> WithComment "Normalizes the tileSize option into a point. Used by the createTile() method"
+            "createTile" => T<obj> * !? (T<'a> ^-> T<'a>) ^-> T<Element>
+            |> WithComment "Called only internally, must be overridden by classes extending GridLayer. Returns the HTMLElement corresponding to the given coords. If the done callback is specified, it must be called when the tile has finished loading and drawing."
         ]
         |> WithEvents [
-            //"layeradd", LayerEvent, "Fired when a layer is added to the group."
+            "loading", Event, "Fired when the grid layer starts loading tiles."
+            "tileunload", TileEvent, "Fired when a tile is removed (e.g. when a tile goes off the screen)."
+            "tileloadstart", TileEvent, "Fired when a tile is requested and starts loading."
+            "tileerror", TileErrorEvent, "Fired when there is an error loading a tile."
+            "tileload", TileEvent, "Fired when a tile loads."
+            "load", Event, "Fired when the grid layer loaded all visible tiles."
         ]
 
 
@@ -1414,7 +1583,6 @@ module Definition =
         Class "L.Control.Zoom.Options"
         |+> Static [Constructor T<unit> |> WithInline "{}"]
         |+> Instance [
-            "position" =@ ControlPosition
             "zoomInText" =@ T<string>
             "zoomOutText" =@ T<string>
             "zoomInTitle" =@ T<string>
@@ -1434,7 +1602,6 @@ module Definition =
         Class "L.Control.Attribution.Options"
         |+> Static [Constructor T<unit> |> WithInline "{}"]
         |+> Instance [
-            "position" =@ ControlPosition
             "prefix" =@ T<string>
             |> WithComment "The HTML text shown before the attributions. Pass false to disable."
         ]
@@ -1447,20 +1614,25 @@ module Definition =
             Constructor !?ControlAttributionOptions
         ]
         |+> Instance [
-            "setPrefix" => T<string -> unit>
-            "addAttribution" => T<string -> unit>
-            "removeAttribution" => T<string -> unit>
+            "setPrefix" => T<string> ^-> T<unit>
+            "addAttribution" => T<string> ^-> T<unit>
+            "removeAttribution" => T<string> ^-> T<unit>
         ]
 
     let ControlLayersOptions =
         Class "L.Control.Layers.Options"
         |+> Static [Constructor T<unit> |> WithInline "{}"]
         |+> Instance [
-            "position" =@ T<string>
             "collapsed" =@ T<bool>
             |> WithComment "If true, the control will be collapsed into an icon and expanded on mouse hover or touch."
             "autoZIndex" =@ T<bool>
             |> WithComment "If true, the control will assign zIndexes in increasing order to all of its layers so that the order is preserved when switching them on/off."
+            "hideSingleBase" =@ T<bool>
+            |> WithComment "If true, the base layers in the control will be hidden when there is only one."
+            "sortLayers" =@ T<bool>
+            |> WithComment "Whether to sort the layers. When false, layers will keep the order in which they were added to the control."
+            "sortFunction" =@ ILayer * ILayer * T<string> * T<string> ^-> !| ILayer
+            |> WithComment "A compare function that will be used for sorting the layers, when sortLayers is true. The function receives both the L.Layer instances and their names, as in sortFunction(layerA, layerB, nameA, nameB). By default, it sorts layers alphabetically by their name."
         ]
 
     let ControlLayers =
@@ -1478,18 +1650,16 @@ module Definition =
             |> WithComment "Adds an overlay (checkbox entry) with the given name to the control."
             "removeLayer" => ILayer ^-> T<unit>
             |> WithComment "Remove the given layer from the control."
-        ]
-        |> WithEvents [
-            "baselayerchange", LayersControlEvent, "Fired when the base layer is changed through the control."
-            "overlayadd", LayersControlEvent, "Fired when an overlay is selected through the control."
-            "overlayremove", LayersControlEvent, "Fired when an overlay is deselected through the control."
+            "expand" => T<unit> ^-> T<unit>
+            |> WithComment "Expand the control container if collapsed."
+            "collapse" => T<unit> ^-> T<unit>
+            |> WithComment "Collapse the control container if expanded."
         ]
 
     let ControlScaleOptions =
         Class "L.Control.Scale.Options"
         |+> Static [Constructor T<unit> |> WithInline "{}"]
         |+> Instance [
-            "position" =@ T<string>
             "maxWidth" =@ T<int>
             |> WithComment "Maximum width of the control in pixels. The width is set dynamically to show round values (e.g. 100, 200, 500)."
             "metric" =@ T<bool>
@@ -1505,7 +1675,7 @@ module Definition =
         |=> Nested [ControlScaleOptions]
         |=> Inherits ControlT
         |+> Static [
-            Constructor !?ControlScaleOptions
+            Constructor !? ControlScaleOptions
         ]
 
     let Control =
@@ -1524,10 +1694,14 @@ module Definition =
             |> WithComment "Returns the current position of the control."
             "addTo" => MapT ^-> T<unit>
             |> WithComment "Adds the control to the map."
-            "removeFrom" => MapT ^-> T<unit>
+            "remove" => T<unit> ^-> T<unit>
             |> WithComment "Removes the control from the map."
             "getContainer" => T<unit -> Element>
             |> WithComment "Returns the HTML container of the control."
+            "onAdd" => MapT ^-> T<Element>
+            |> WithComment "Should return the container DOM element for the control and add listeners on relevant map events. Called on control.addTo(map)."
+            "onRemove" => MapT ^-> T<unit>
+            |> WithComment "Optional method. Should contain all clean up code that removes the listeners previously added in onAdd. Called on control.remove()."
         ]
 
     let LocateOptions =
@@ -2105,6 +2279,8 @@ module Definition =
         |+> Static [
             "ie" =? T<bool>
             |> WithComment "true for all Internet Explorer versions."
+            "ielt9" =? T<bool>
+            |> WithComment "true for Internet Explorer versions less than 9."
             "ie6" =? T<bool>
             |> WithComment "true for Internet Explorer 6."
             "ie7" =? T<bool>
@@ -2129,6 +2305,155 @@ module Definition =
             |> WithComment "true for browsers with Microsoft touch model (e.g. IE10)."
             "retina" =? T<bool>
             |> WithComment "true for devices with Retina screens."
+            "edge" =? T<bool>
+            |> WithComment "true for the Edge web browser."
+            "androidStock" =? T<bool>
+            |> WithComment "true for the Android stock browser (i.e. not Chrome)."
+            "opera" =? T<bool>
+            |> WithComment "true for the Opera browser"
+            "chrome" =? T<bool>
+            |> WithComment "true for the Chrome browser."
+            "gecko" =? T<bool>
+            |> WithComment "true for gecko-based browsers like Firefox."
+            "safari" =? T<bool>
+            |> WithComment "true for the Safari browser."
+            "opera12" =? T<bool>
+            |> WithComment "true for the Opera browser supporting CSS transforms (version 12 or later)."
+            "win" =? T<bool>
+            |> WithComment "true when the browser is running in a Windows platform."
+            "ie3d" =? T<bool>
+            |> WithComment "true for all Internet Explorer versions supporting CSS transforms."
+            "gecko3d" =? T<bool>
+            |> WithComment "true for gecko-based browsers supporting CSS transforms."
+            "any3d" =? T<bool>
+            |> WithComment "true for all browsers supporting CSS transforms."
+            "mobileWebkit3d" =? T<bool>
+            |> WithComment "true for all webkit-based browsers in a mobile device supporting CSS transforms."
+            "msPointer" =? T<bool>
+            |> WithComment "true for browsers implementing the Microsoft touch events model (notably IE10)."
+            "pointer" =? T<bool>
+            |> WithComment "true for all browsers supporting pointer events."
+            "mobileGecko" =? T<bool>
+            |> WithComment "true for gecko-based browsers running in a mobile device."
+            "passiveEvents" =? T<bool>
+            |> WithComment "true for browsers that support passive events."
+            "canvas" =? T<bool>
+            |> WithComment "true when the browser supports <canvas>."
+            "svg" =? T<bool>
+            |> WithComment "true when the browser supports SVG."
+            "vml" =? T<bool>
+            |> WithComment "true if the browser supports VML."
+        ]
+
+    let Util =
+        Class "L.Util"
+        |+> Static [
+            "extend" => T<obj> * !? T<obj> ^-> T<obj>
+            |> WithComment "Merges the properties of the src object (or multiple objects) into dest object and returns the latter. Has an L.extend shortcut."
+            "create" => T<obj> * !? T<obj> ^-> T<obj>
+            |> WithComment "Compatibility polyfill for Object.create."
+            //TODO bind(<Function> fn, …)
+            "stamp" => T<obj> ^-> T<int>
+            |> WithComment "Returns the unique ID of an object, assigning it one if it doesn't have it."
+            // TODO throttle(<Function> fn, <Number> time, <Object> context)
+            "wrapNum" => T<int> * !| T<int> * !? T<bool>
+            |> WithComment "Returns the number num modulo range in such a way so it lies within range[0] and range[1]. The returned value will be always smaller than range[1] unless includeMax is set to true."
+            "falseFn" => T<unit> ^-> (T<'a> ^-> T<bool>)
+            |> WithComment "Returns a function which always returns false."
+            "formatNum" => T<int> * !? T<int>
+            |> WithComment "Returns the number num rounded to digits decimals, or to 6 decimals by default."
+            "trim" => T<string> ^-> !| T<string>
+            |> WithComment "Compatibility polyfill for String.prototype.trim"
+            "splitWords" => T<string> ^-> !| T<string>
+            |> WithComment "Trims and splits the string on whitespace and returns the array of parts."
+            "setOptions" => T<obj> * T<obj> ^-> T<obj>
+            |> WithComment "Merges the given properties to the options of the obj object, returning the resulting options. See Class options. Has an L.setOptions shortcut."
+            "getParamString" => T<obj> * !? T<string> * !? T<bool> ^-> T<string>
+            |> WithComment "Converts an object into a parameter URL string, e.g. {a: ''foo'', b: ''bar''} translates to '?a=foo&b=bar'. If existingUrl is set, the parameters will be appended at the end. If uppercase is true, the parameter names will be uppercased (e.g. '?A=foo&B=bar')"
+            "template" => T<string> * T<obj>
+            |> WithComment "Simple templating facility, accepts a template string of the form 'Hello {a}, {b}' and a data object like {a: 'foo', b: 'bar'}, returns evaluated string ('Hello foo, bar'). You can also specify functions instead of strings for data values — they will be evaluated passing data as an argument."
+            "isArray" => T<obj> ^-> T<bool>
+            |> WithComment "Compatibility polyfill for Array.isArray"
+            "indexOf" => !| T<obj> * T<obj> ^-> T<int>
+            |> WithComment "Compatibility polyfill for Array.prototype.indexOf"
+            "requestAnimFrame" => (T<'a> ^-> T<'a>) * !? T<obj> * !? T<bool>
+            |> WithComment "Schedules fn to be executed when the browser repaints. fn is bound to context if given. When immediate is set, fn is called immediately if the browser doesn't have native support for window.requestAnimationFrame, otherwise it's delayed. Returns a request ID that can be used to cancel the request."
+            "cancelAnimFrame" => T<int>
+            |> WithComment "Cancels a previous requestAnimFrame. See also window.cancelAnimationFrame."
+
+            "lastId" =? T<int>
+            |> WithComment "Last unique ID used by stamp()"
+            "emptyImageUrl" =? T<string>
+            |> WithComment "Data URI string containing a base64-encoded empty GIF image. Used as a hack to free memory from unused images on WebKit-powered mobile devices (by setting image src to this string)."
+        ]
+
+    let LineUtil =
+        Class "L.LineUtil"
+        |+> Static [
+            "simplify" => !| Point * T<int> ^-> !| Point
+            |> WithComment "Dramatically reduces the number of points in a polyline while retaining its shape and returns a new array of simplified points, using the Douglas-Peucker algorithm. Used for a huge performance boost when processing/displaying Leaflet polylines for each zoom level and also reducing visual noise. tolerance affects the amount of simplification (lesser value means higher quality but slower and with more points). Also released as a separated micro-library Simplify.js."
+            "pointToSegmentDistance" => Point * Point * Point ^-> T<int>
+            |> WithComment "Returns the distance between point p and segment p1 to p2."
+            "closestPointOnSegment" => Point * Point * Point ^-> Point
+            |> WithComment "Returns the closest point from a point p on a segment p1 to p2."
+            "clipSegment" => Point * Point * Bounds * !? T<bool> * !? T<bool> ^-> !| Point + T<bool>
+            |> WithComment "Clips the segment a to b by rectangular bounds with the Cohen-Sutherland algorithm (modifying the segment points directly!). Used by Leaflet to only show polyline points that are on the screen or near, increasing performance."
+            "isFlat" => !| LatLng ^-> T<bool>
+            |> WithComment "Returns true if latlngs is a flat array, false is nested."
+        ]
+
+    let PolyUtil =
+        Class "L.PolyUtil"
+        |+> Static [
+            "clipPolygon" => !| Point * Bounds * !? T<bool> ^-> !| Point
+            |> WithComment "Clips the polygon geometry defined by the given points by the given bounds (using the Sutherland-Hodgman algorithm). Used by Leaflet to only show polygon points that are on the screen or near, increasing performance. Note that polygon points needs different algorithm for clipping than polyline, so there's a separate method for it."
+        ]
+
+    let PosAnimation =
+        Class "L.PosAnimation"
+        |=> Inherits Evented
+        |+> Static [
+            Constructor(T<unit>)
+            |> WithComment "Creates a PosAnimation object."
+        ]
+        |> WithEvents [
+            "start", Event, "Fired when the animation starts."
+            "step", Event, "Fired continuously during the animation."
+            "end", Event, "Fired when the animation ends."
+        ]
+        |+> Instance [
+            "run" => T<Element> * Point * !? T<int> * !? T<int> ^-> T<unit>
+            |> WithComment "Run an animation of a given element to a new position, optionally setting duration in seconds (0.25 by default) and easing linearity factor (3rd argument of the cubic bezier curve, 0.5 by default)."
+            "stop" => T<unit> ^-> T<unit>
+            |> WithComment "Stops the animation (if currently running)."
+        ]
+        
+    let DraggableOptions =
+        Class "L.Draggable.Options"
+        |+> Static [Constructor T<unit> |> WithInline "{}"]
+        |+> Instance [
+            "clickTolerance" =@ T<int>
+            |> WithComment "The max number of pixels a user can shift the mouse pointer during a click for it to be considered a valid click (as opposed to a mouse drag)."
+        ]
+
+    let Draggable =
+        Class "L.Draggable"
+        |=> Inherits Evented
+        |+> Static [
+            Constructor (T<Element> * !? T<Element> * !? T<bool> * !? DraggableOptions)
+        ]
+        |> WithEvents [
+            "down", Event, "Fired when a drag is about to start."
+            "dragstart", Event, "Fired when a drag starts."
+            "predrag", Event, "Fired continuously during dragging before each corresponding update of the element's position."
+            "drag", Event, "Fired continuously during dragging."
+            "dragend", DragEndEvent, "Fired when the drag ends."
+        ]
+        |+> Instance [
+            "enable" => T<unit> ^-> T<unit>
+            |> WithComment "Enables the dragging ability."
+            "disable" => T<unit> ^-> T<unit>
+            |> WithComment "Disables the dragging ability."
         ]
 
     module Res =
