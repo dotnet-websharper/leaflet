@@ -739,7 +739,7 @@ module Definition =
             ]))  
    
     let LayerOptions =
-        Class "L.Layer.Options"
+        Class "L.LayerOptions"
         |+> Static [Constructor T<unit> |> WithInline "{}"]
         |+> Instance [
             "pane" =@ T<string>
@@ -903,7 +903,7 @@ module Definition =
 
     let Tooltip =
         Class "L.Tooltip"
-        |=> Nested [TooltipOptions]
+        //|=> Nested [TooltipOptions]
         |=> Implements [ILayer]
         |=> TooltipT
         |+> Static [
@@ -988,10 +988,10 @@ module Definition =
         |=> Nested [PopupOptions]
         |=> Implements [ILayer]
         |=> PopupT
-        |+> Static [
+        (* |+> Static [
             Constructor (!?PopupOptions * !?ILayer?source)
             |> WithComment "Instantiates a Popup object given an optional options object that describes its appearance and location and an optional source object that is used to tag the popup with a reference to the ILayer to which it refers."
-        ]
+        ] *)
         |> WithEvents [
             "add", Event, "Fired after the layer is added to a map"
             "remove", Event, "Fired after the layer is removed from a map"
@@ -1459,7 +1459,7 @@ module Definition =
         ]
 
     let CircleOptions =
-        Class "L.Circle.Options"
+        Class "L.CircleOptions"
         |=> Inherits Path
         |+> Static [Constructor T<unit> |> WithInline "{}"]
         |+> Instance [
@@ -1489,8 +1489,8 @@ module Definition =
             |> WithComment "Returns the LatLngBounds of the path."
         ]
 
-   (*  let CircleMarkerOptions =
-        Class "L.CircleMarker.Options"
+    let CircleMarkerOptions =
+        Class "L.CircleMarkerOptions"
         |=> Inherits PathOptions
         |+> Static [Constructor T<unit> |> WithInline "{}"]
         |+> Instance [
@@ -1520,7 +1520,7 @@ module Definition =
             "toGeoJSON" => T<unit -> obj>
             |> WithComment "Returns a GeoJSON representation of the circle marker (GeoJSON Point Feature)."
         ]
- *)
+
     let LayerGroup =
         Class "L.LayerGroup"
         |=> Implements [ILayer]
@@ -1577,9 +1577,9 @@ module Definition =
 
 
     let GeoJSONT = Type.New()
-(* 
+ 
     let GeoJSONOptions =
-        Class "L.GeoJSON.Options"
+        Class "L.GeoJSONOptions"
         |=> Inherits PathOptions
         |+> Static [Constructor T<unit> |> WithInline "{}"]
         |+> Instance [
@@ -1642,7 +1642,7 @@ module Definition =
             "asFeature" => T<obj> ^-> T<obj>
             |> WithComment "Normalize GeoJSON geometries/features into GeoJSON features."
         ]
- *)
+ 
     let GridLayerOptions =
         Class "L.GridLayer.Options"
         |=> Inherits PathOptions
@@ -1728,37 +1728,37 @@ module Definition =
             "bottomright" =? ControlPosition
         ]
 
-    (* let ControlOptions =
-        Class "L.Control.Options"
+    let ControlOptions =
+        Class "L.ControlOptions"
         |+> Static [Constructor T<unit> |> WithInline "{}"]
         |+> Instance [
             "position" =@ ControlPosition
             |> WithComment "The initial position of the control (one of the map corners)."
-        ] *)
+        ]
 
     let ControlT = Type.New()
 
-    let ControlZoomOptions =
-        Class "L.Control.Zoom.Options"
+    (* let ControlZoomOptions =
+        Class "L.Control.ZoomOptions"
         |+> Static [Constructor T<unit> |> WithInline "{}"]
         |+> Instance [
             "zoomInText" =@ T<string>
             "zoomOutText" =@ T<string>
             "zoomInTitle" =@ T<string>
             "zoomOutTitle" =@ T<string>
-        ]
+        ] *)
 
     let ControlZoom =
         Class "L.Control.Zoom"
-        |=> Nested [ControlZoomOptions]
+        //|=> Nested [ControlZoomOptions]
         |=> Inherits ControlT
         |+> Static [
-            Constructor !?ControlZoomOptions
+            Constructor (!? T<string>)
             |> WithComment "Creates a zoom control."
         ]
 
     let ControlAttributionOptions =
-        Class "L.Control.Attribution.Options"
+        Class "L.Control.AttributionOptions"
         |+> Static [Constructor T<unit> |> WithInline "{}"]
         |+> Instance [
             "prefix" =@ T<string>
@@ -1767,7 +1767,7 @@ module Definition =
 
     let ControlAttribution =
         Class "L.Control.Attribution"
-        |=> Nested [ControlAttributionOptions]
+        //|=> Nested [ControlAttributionOptions]
         |=> Inherits ControlT
         |+> Static [
             Constructor !?ControlAttributionOptions
@@ -1779,7 +1779,7 @@ module Definition =
         ]
 
     let ControlLayersOptions =
-        Class "L.Control.Layers.Options"
+        Class "L.Control.LayersOptions"
         |+> Static [Constructor T<unit> |> WithInline "{}"]
         |+> Instance [
             "collapsed" =@ T<bool>
@@ -1796,7 +1796,7 @@ module Definition =
 
     let ControlLayers =
         Class "L.Control.Layers"
-        |=> Nested [ControlLayersOptions]
+        //|=> Nested [ControlLayersOptions]
         |=> Inherits ControlT
         |+> Static [
             Constructor (!?T<obj>?baseLayers * !?T<obj>?overlays * !?ControlLayersOptions)
@@ -1816,7 +1816,7 @@ module Definition =
         ]
 
     let ControlScaleOptions =
-        Class "L.Control.Scale.Options"
+        Class "L.Control.ScaleOptions"
         |+> Static [Constructor T<unit> |> WithInline "{}"]
         |+> Instance [
             "maxWidth" =@ T<int>
@@ -1831,17 +1831,17 @@ module Definition =
 
     let ControlScale =
         Class "L.Control.Scale"
-        |=> Nested [ControlScaleOptions]
+        //|=> Nested [ControlScaleOptions]
         |=> Inherits ControlT
         |+> Static [
             Constructor !? ControlScaleOptions
         ]
 
-    (* let Control =
+    let Control =
         Class "L.Control"
         |=> ControlT
         |=> Implements [IControl]
-        |=> Nested [ControlOptions; ControlPosition; ControlZoom; ControlAttribution; ControlLayers; ControlScale]
+        //|=> Nested [ControlOptions; ControlPosition; ControlZoom; ControlAttribution; ControlLayers; ControlScale]
         |+> Static [
             Constructor (!?ControlOptions)
             |> WithComment "Creates a control with the given options."
@@ -1862,7 +1862,7 @@ module Definition =
             "onRemove" => MapT ^-> T<unit>
             |> WithComment "Optional method. Should contain all clean up code that removes the listeners previously added in onAdd. Called on control.remove()."
         ]
- *)
+
     let LocateOptions =
         Class "L.LocateOptions"
         |+> Static [Constructor T<unit> |> WithInline "{}"]
@@ -2049,8 +2049,8 @@ module Definition =
             |> WithComment "Pane for Tooltips."
         ]
 
-    (* let MarkerOptions =
-        Class "L.Marker.Options"
+    let MarkerOptions =
+        Class "L.MarkerOptions"
         |+> Static [Constructor T<unit> |> WithInline "{}"]
         |+> Instance [
             "icon" =@ Icon
@@ -2091,7 +2091,7 @@ module Definition =
 
     let Marker =
         Class "L.Marker"
-        |=> Nested [MarkerOptions]
+        //|=> Nested [MarkerOptions]
         |=> Implements [ILayer]
         |+> Static [
             Constructor (LatLngOrCoords * !?MarkerOptions)
@@ -2135,19 +2135,19 @@ module Definition =
             |> WithComment "Changes the opacity of the marker."
             "update" => T<unit -> unit>
             |> WithComment "Updates the marker position, useful if coordinates of its latLng object were changed directly."
-            //"bindPopup" => (T<string> + T<Element> + Popup) * !?PopupOptions ^-> T<unit>
+            "bindPopup" => (T<string> + T<Element> + Popup) * !?PopupOptions ^-> T<unit>
             |> WithComment "Binds a popup with a particular HTML content to a click on this marker. You can also open the bound popup with the Marker openPopup method."
             "unbindPopup" => T<unit -> unit>
             |> WithComment "Unbinds the popup previously bound to the marker with bindPopup."
             "openPopup" => T<unit -> unit>
             |> WithComment "Opens the popup previously bound by the bindPopup method."
-            //"getPopup" => T<unit> ^-> Popup
+            "getPopup" => T<unit> ^-> Popup
             |> WithComment "Returns the popup previously bound by the bindPopup method."
             "closePopup" => T<unit -> unit>
             |> WithComment "Closes the bound popup of the marker if it's opened."
             "togglePopup" => T<unit -> unit>
             |> WithComment "Toggles the popup previously bound by the bindPopup method."
-            //"setPopupContent" => (T<string> + T<Element>) * !?PopupOptions ^-> T<unit>
+            "setPopupContent" => (T<string> + T<Element>) * !?PopupOptions ^-> T<unit>
             |> WithComment "Sets an HTML content of the popup of this marker."
             "isPopupOpen"=> T<unit> ^-> T<bool>
             |> WithComment "Returns true if the popup bound to this layer is currently open."
@@ -2165,7 +2165,7 @@ module Definition =
             |> WithComment "Returns the HTMLElement representing the named pane on the map. If name is omitted, returns the pane for this layer."
             "getAttribution" => T<unit> ^-> T<string>
             |> WithComment "Used by the attribution control, returns the attribution option."
-            //"bindTooltip" => (T<string> + T<Element> + Popup) * !?TooltipOptions ^-> T<unit>
+            "bindTooltip" => (T<string> + T<Element> + Popup) * !?TooltipOptions ^-> T<unit>
             |> WithComment "Binds a tooltip to the layer with the passed content and sets up the necessary event listeners. If a Function is passed it will receive the layer as the first argument and should return a String or HTMLElement."
             "unbindTooltip" => T<unit> ^-> T<unit>
             |> WithComment "Removes the tooltip previously bound with bindTooltip."
@@ -2177,17 +2177,17 @@ module Definition =
             |> WithComment "Opens or closes the tooltip bound to this layer depending on its current state."
             "isTooltipOpen" => T<unit> ^-> T<bool>
             |> WithComment "Returns true if the tooltip bound to this layer is currently open."
-            //"setTooltipContent" => T<string> + T<Element> + Tooltip ^-> T<unit>
+            "setTooltipContent" => T<string> + T<Element> + Tooltip ^-> T<unit>
             |> WithComment "Sets the content of the tooltip bound to this layer."
-            //"getTooltip" => T<unit> ^-> Tooltip
+            "getTooltip" => T<unit> ^-> Tooltip
             |> WithComment "Returns the tooltip bound to this layer."
             
             // Properties
             "dragging" =? IHandler
             |> WithComment "Marker dragging handler (by both mouse and touch)."
-        ] *)
+        ]
 
-(*     let Map =
+    let Map =
         Class "L.Map"
         |=> MapT
         |=> Nested [MapOptions]
@@ -2400,7 +2400,7 @@ module Definition =
             "attributionControl" =? ControlAttribution
             |> WithComment "Attribution control."
         ]
- *)
+
     let Browser =
         Class "L.Browser"
         |+> Static [
@@ -2596,41 +2596,6 @@ module Definition =
             |> WithComment "Adds a constructor hook to the class."
         ]
 
-(*     let Evented =
-        Class "L.Evented"
-        |=> IEvented
-        |+> Static []
-        |+> Instance [
-            "on" => T<obj> ^-> T<unit>
-            |> WithComment "Adds a set of type/listener pairs, e.g. {click: onClick, mousemove: onMouseMove}"
-            "off" => T<obj> ^-> T<unit>
-            |> WithComment "Removes a set of type/listener pairs."
-            "off" => T<unit> ^-> T<unit>
-            |> WithComment "Removes all listeners to all events on the object. This includes implicitly attached events."
-            "fire" => T<string> * !? T<obj> * !? T<bool> ^-> T<unit>
-            |> WithComment "Fires an event of the specified type. You can optionally provide an data object — the first argument of the listener function will contain its properties. The event can optionally be propagated to event parents."
-            "listens" => T<string> ^-> T<bool>
-            |> WithComment "Returns true if a particular event type has any listeners attached to it."
-            "once" => T<obj> ^-> T<unit>
-            |> WithComment "Behaves as on(…), except the listener will only get fired once and then removed."
-            "addEventParent" => T<obj> ^-> T<unit>
-            |> WithComment "Adds an event parent - an Evented that will receive propagated events."
-            "removeEventParent" => T<obj> ^-> T<unit>
-            |> WithComment "Removes an event parent, so it will stop receiving propagated events."
-            "addEventListener" => T<obj> ^-> T<unit>
-            |> WithComment "ALias to on(…)"
-            "removeEventListener" => T<obj> + T<unit> ^-> T<unit>
-            |> WithComment "Alias to off(…)"
-            "clearAllEventListeners" => T<obj> + T<unit> ^-> T<unit>
-            |> WithComment "Alias to off(…)"
-            "addOneTimeEventListener" => T<obj> ^-> T<unit>
-            |> WithComment "Alias to once(…)"
-            "fireEvent" => T<string> * !? T<obj> * !? T<bool> ^-> T<unit>
-            |> WithComment "Alias to fire(…)"
-            "hasEventListeners" => T<string> ^-> T<bool>
-            |> WithComment "Alias to listens(…)"
-        ] *)
-
     module Res =
         let Css =
             Resource "Css" "https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.2/leaflet.css"
@@ -2679,36 +2644,46 @@ module Definition =
                 Polygon
                 MultiPolygon
                 Rectangle
-                Circle
-                //CircleMarker
+                //Circle
+                CircleMarker
                 LayerGroup
                 FeatureGroup
-                //GeoJSON
-                //Control
+                GeoJSON
+                Control
                 LocateOptions
                 PanOptions
                 ZoomOptions
                 ZoomPanOptions
                 FitBoundsOptions
                 MapPanes
-                //Marker
-                //Map
+                Marker
+                Map
                 Browser
                 Tooltip
                 TooltipEvent
                 Renderer
                 RendererOptions
-                //Evented
                 ZoomAnimEvent
                 KeyboardEvent
-                //CircleMarkerOptions
-                //MarkerOptions
-                //ControlOptions
-                //GeoJSONOptions
+                CircleMarkerOptions
+                MarkerOptions
+                ControlOptions
+                ControlPosition
+                ControlZoom
+                ControlAttribution
+                ControlLayers
+                ControlScale
+                GeoJSONOptions
                 PathOptions
                 Layer
                 PopupOptions
                 TooltipOptions
+                LayerOptions
+                //CircleOptions
+                ControlScaleOptions
+                ControlLayersOptions
+                //ControlZoomOptions
+                ControlAttributionOptions
             ]
         ]
         |> Requires [Res.Js]
