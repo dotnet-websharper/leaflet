@@ -2462,13 +2462,11 @@ module Definition =
             |> WithComment "Merges the properties of the src object (or multiple objects) into dest object and returns the latter. Has an L.extend shortcut."
             "create" => T<obj> * !? T<obj> ^-> T<obj>
             |> WithComment "Compatibility polyfill for Object.create."
-            //TODO bind(<Function> fn, …)
             "stamp" => T<obj> ^-> T<int>
             |> WithComment "Returns the unique ID of an object, assigning it one if it doesn't have it."
-            // TODO throttle(<Function> fn, <Number> time, <Object> context)
             "wrapNum" => T<int> * !| T<int> * !? T<bool>
             |> WithComment "Returns the number num modulo range in such a way so it lies within range[0] and range[1]. The returned value will be always smaller than range[1] unless includeMax is set to true."
-            "falseFn" => T<unit> ^-> (T<obj> ^-> T<bool>) //TODO
+            "falseFn" => T<unit> ^-> (T<obj> ^-> T<bool>)
             |> WithComment "Returns a function which always returns false."
             "formatNum" => T<int> * !? T<int>
             |> WithComment "Returns the number num rounded to digits decimals, or to 6 decimals by default."
@@ -2486,8 +2484,6 @@ module Definition =
             |> WithComment "Compatibility polyfill for Array.isArray"
             "indexOf" => !| T<obj> * T<obj> ^-> T<int>
             |> WithComment "Compatibility polyfill for Array.prototype.indexOf"
-            //"requestAnimFrame" => (T<'a> ^-> T<'a>) * !? T<obj> * !? T<bool>
-            //|> WithComment "Schedules fn to be executed when the browser repaints. fn is bound to context if given. When immediate is set, fn is called immediately if the browser doesn't have native support for window.requestAnimationFrame, otherwise it's delayed. Returns a request ID that can be used to cancel the request."
             "cancelAnimFrame" => T<int>
             |> WithComment "Cancels a previous requestAnimFrame. See also window.cancelAnimationFrame."
 
