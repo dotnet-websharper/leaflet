@@ -2578,9 +2578,9 @@ module Definition =
 
     module Res =
         let Css =
-            Resource "Css" "https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.2/leaflet.css"
+            Resource "Css" "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.css"
         let Js =
-            Resource "Js" "https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.2/leaflet.js"
+            Resource "Js" "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.js"
             |> Requires [Css]
 
     let Assembly =

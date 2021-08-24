@@ -21,19 +21,21 @@ namespace WebSharper.Leaflet.Tests
 
 open WebSharper
 open WebSharper.JavaScript
-open WebSharper.Html.Client
+open WebSharper.UI
+open WebSharper.UI.Client
+open WebSharper.UI.Html
 
 [<JavaScript>]
 module Client =
 
     [<SPAEntryPoint>]
     let Main () =
-        let coordinates = Div []
-        let elt =
-            Div [
-                Div [Attr.Style "height: 600px;"]
-                |>! OnAfterRender (fun div ->
-                    let map = Leaflet.Map(div.Dom)
+        let coordinates = div [] [] :?> Elt
+        div [] [
+            div [
+                attr.style "height: 600px;"
+                on.afterRender (fun div ->
+                    let map = Leaflet.Map(div)
                     map.SetView((47.49883, 19.0582), 14)
                     map.AddLayer(
                         Leaflet.TileLayer(
@@ -49,6 +51,7 @@ module Client =
                     map.On_mouseout(fun map ev ->
                         coordinates.Text <- "")
                 )
-                coordinates
-            ]
-        (elt :> IControlBody).ReplaceInDom(JS.Document.QuerySelector "#main")
+            ] []
+            coordinates
+        ]
+        |> Doc.RunById "main"
