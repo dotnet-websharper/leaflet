@@ -8,3 +8,4 @@ obj/
 /paket-files/
 /.vscode/
 WebSharper.Leaflet.Tests/Content/
+.vs/
