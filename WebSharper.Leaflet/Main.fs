@@ -1280,7 +1280,7 @@ module Definition =
             |> WithComment "Fill opacity."
             "dashArray" =@ T<string>
             |> WithComment "A string that defines the stroke dash pattern. Doesn't work on canvas-powered layers (e.g. Android 2)."
-            "lineJoin" =@ T<JavaScript.LineJoin>
+            "lineJoin" =@ T<JavaScript.CanvasLineJoin>
             |> WithComment "A string that defines shape to be used at the corners of the stroke."
             "clickable" =@ T<bool>
             |> WithComment "If false, the vector will not emit mouse events and will act as a part of the underlying map."
