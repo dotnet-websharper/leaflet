@@ -35,7 +35,7 @@ module Client =
             div [
                 attr.style "height: 600px;"
                 on.afterRender (fun div ->
-                    let map = Leaflet.Map(div)
+                    let map = Leaflet.L.Map(div)
                     map.SetView((47.49883, 19.0582), 14)
                     map.AddLayer(
                         Leaflet.TileLayer(

@@ -8,6 +8,11 @@
   <ItemGroup>
     <Compile Include="Main.fs" />
   </ItemGroup>
+	<PropertyGroup>
+		<NpmDependencies>
+			<NpmPackage Name="leaflet" Version="gt= 1.9.4 lt 2.0.0" ResolutionStrategy="Max" />
+		</NpmDependencies>
+	</PropertyGroup>
   <Import Project="..\paket-files\wsbuild\github.com\dotnet-websharper\build-script\WebSharper.Fake.targets" Condition="Exists('..\paket-files\wsbuild\github.com\dotnet-websharper\build-script\WebSharper.Fake.targets')" />
   <Import Project="..\.paket\Paket.Restore.targets" />
 </Project>

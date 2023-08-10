@@ -25,15 +25,15 @@ open WebSharper.JavaScript.Dom
 module Definition =
     open WebSharper.InterfaceGenerator
 
-    let TileLayerT = Class "L.TileLayer"
-    let MapT = Class "L.Map"
-    let PopupT = Class "L.Popup"
-    let TooltipT = Class "L.Tooltip"
-    let LatLngT = Class "L.LatLng"
+    let TileLayerT = Class "L.TileLayer" 
+    let MapT = Class "L.Map" 
+    let PopupT = Class "L.Popup" 
+    let TooltipT = Class "L.Tooltip" 
+    let LatLngT = Class "L.LatLng" 
     let LatLngOrCoords = LatLngT + T<float * float>
-    let PointT = Class "L.Point"
+    let PointT = Class "L.Point" 
     let PointOrCoords = PointT + T<int * int>
-    let LatLngBoundsT = Class "L.LatLngBounds"
+    let LatLngBoundsT = Class "L.LatLngBounds" 
     let LatLngBoundsOrCoords = LatLngBoundsT + Type.ArrayOf LatLngOrCoords
 
     let LatLng =
@@ -168,6 +168,7 @@ module Definition =
 
     let Bounds =
         Class "L.Bounds"
+        
         |+> Static [
             Constructor (PointOrCoords?corner1 * PointOrCoords?corner2)
             |> WithComment "Creates a Bounds object from two corners coordinate pairs."
@@ -207,6 +208,7 @@ module Definition =
 
     let IconOptions =
         Class "L.Icon.Options"
+        
         |+> Static [Constructor T<string>?IconUrl |> WithInline "{iconUrl:$IconUrl}"]
         |+> Instance [
             "iconUrl" =@ T<string>
@@ -235,6 +237,7 @@ module Definition =
 
     let Icon =
         Class "L.Icon"
+        
         |=> Nested [IconOptions]
         |+> Static [
             Constructor IconOptions
@@ -252,6 +255,7 @@ module Definition =
 
     let DivIconOptions =
         Class "L.DivIcon.Options"
+        
         |+> Static [Constructor T<unit> |> WithInline "{}"]
         |+> Instance [
             "iconSize" =@ Point
@@ -268,6 +272,7 @@ module Definition =
 
     let DivIcon =
         Class "L.DivIcon"
+        
         |=> Nested [DivIconOptions]
         |=> Inherits Icon
         |+> Static [
@@ -277,6 +282,7 @@ module Definition =
 
     let Transformation =
         Class "L.Transformation"
+        
         |> WithComment "Represents an affine transformation: a set of coefficients a, b, c, d for transforming a point of a form (x, y) into (a*x + b, c*y + d) and doing the reverse. Used by Leaflet in its projections code."
         |+> Static [
             Constructor (T<float>?a * T<float>?b * T<float>?c * T<float>?d)
@@ -358,6 +364,7 @@ module Definition =
 
     let CRS =
         Class "L.CRS"
+        
         |+> Static [
             "EPSG3857" =? ICRS
             |> WithComment "The most common CRS for online maps, used by almost all free and commercial tile providers. Uses Spherical Mercator projection. Set in by default in Map's crs option."
@@ -406,6 +413,7 @@ module Definition =
 
     let Projection =
         Class "L.Projection"
+        
         |+> Static [
             "SphericalMercator" =? IProjection
             |> WithComment "Spherical Mercator projection — the most common projection for online maps, used by almost all free and commercial tile providers. Assumes that Earth is a sphere. Used by the EPSG:3857 CRS."
@@ -423,6 +431,7 @@ module Definition =
 
     let Event =
         Class "L.Event"
+        
         |+> Instance [
             "type" =? T<string>
             |> WithComment "The event type (e.g. 'click')."
@@ -438,6 +447,7 @@ module Definition =
 
     let KeyboardEvent =
         Class "L.KeyboardEvent"
+        
         |=> Inherits Event
         |+> Instance [
             "originalEvent" =? T<Element>
@@ -445,6 +455,7 @@ module Definition =
 
     let MouseEvent =
         Class "L.MouseEvent"
+        
         |=> Inherits Event
         |+> Instance [
             "latlng" =? LatLng
@@ -459,6 +470,7 @@ module Definition =
 
     let LocationEvent =
         Class "L.LocationEvent"
+        
         |=> Inherits Event
         |+> Instance [
             "latlng" =? LatLng
@@ -590,6 +602,7 @@ module Definition =
 
     let DOMEvent =
         Class "L.DomEvent"
+        
         |+> Static [
             "on" => T<Element> * T<obj> * !? T<obj> ^-> T<unit>
             |> WithComment "Adds a set of type/listener pairs, e.g. {click: onClick, mousemove: onMouseMove}"
@@ -617,6 +630,7 @@ module Definition =
 
     let DOMUtil =
         Class "L.DomUtil"
+        
         |+> Static [
             "get" => T<string> + T<Element> ^-> T<Element>
             |> WithComment "Returns an element given its DOM id, or returns the element itself if it was passed directly."
@@ -735,6 +749,7 @@ module Definition =
    
     let LayerOptions =
         Class "L.Layer.Options"
+        
         |+> Static [Constructor T<unit> |> WithInline "{}"]
         |+> Instance [
             "pane" =@ T<string>
@@ -747,6 +762,7 @@ module Definition =
         Class "L.Layer"
         |=> Nested [LayerOptions]
         |=> Inherits IEvented
+        
         |+> Static []
         |> WithEvents [
             "add", Event, "Fired after the layer is added to a map"
@@ -797,6 +813,7 @@ module Definition =
     let RendererOptions =
         Class "L.Renderer.Options"
         |=> Inherits Layer
+        
         |+> Static [Constructor T<unit> |> WithInline "{}"]
         |+> Instance [
             "padding" =@ T<float>
@@ -808,6 +825,7 @@ module Definition =
     let Renderer =
         Class "L.Renderer"
         |=> Nested [RendererOptions]
+        
         |+> Static []
         |> WithEvents [
             "update", Event, "Fired when the renderer updates its bounds, center and zoom, for example when its map has moved"
@@ -817,6 +835,7 @@ module Definition =
     let InteractiveLayerOptions =
         Class "L.InteractiveLayer.Options"
         |=> Inherits Layer
+        
         |+> Static [Constructor T<unit> |> WithInline "{}"]
         |+> Instance [
             "interactive" =@ T<bool>
@@ -828,6 +847,7 @@ module Definition =
 
     let InteractiveLayer =
         Class "L.InteractiveLayer"
+        
         |=> Nested [InteractiveLayerOptions]
         |+> Static []
         |> WithEvents [
@@ -843,6 +863,7 @@ module Definition =
     let DivOverlayOptions =
         Class "L.DivOverlay.Options"
         |=> Inherits Layer
+        
         |+> Static [Constructor T<unit> |> WithInline "{}"]
         |+> Instance [
             "offset" =@ Point
@@ -855,10 +876,12 @@ module Definition =
 
     let DivOverlay =
         Class "L.DivOverlay"
+        
         |=> Nested [DivOverlayOptions]
 
     let Handler =
         Class "L.Handler"
+        
         |+> Static [
             "addTo" => MapT * T<string> ^-> T<unit>
             |> WithComment "Adds a new Handler to the given map with the given name."
@@ -879,6 +902,7 @@ module Definition =
 
     let TooltipOptions =
         Class "L.Tooltip.Options"
+        
         |+> Static [Constructor T<unit> |> WithInline "{}"]
         |+> Instance [
             "pane" =@ T<string>
@@ -900,6 +924,7 @@ module Definition =
     let Tooltip =
         TooltipT
         |=> Nested [TooltipOptions]
+        
         |=> Implements [ILayer]
         |+> Static [
             Constructor (!?TooltipOptions * !?ILayer?source)
@@ -940,6 +965,7 @@ module Definition =
 
     let PopupOptions =
         Class "L.Popup.Options"
+        
         |+> Static [Constructor T<unit> |> WithInline "{}"]
         |+> Instance [
             "maxWidth" =@ T<int>
@@ -981,6 +1007,7 @@ module Definition =
     let Popup =
         PopupT
         |=> Nested [PopupOptions]
+        
         |=> Implements [ILayer]
         |+> Static [
             Constructor (!?PopupOptions * !?ILayer?source)
@@ -1021,6 +1048,7 @@ module Definition =
 
     let TileLayerWMSOptions =
         Class "L.TileLayer.WMS.Options"
+        
         |+> Static [Constructor T<string>?Layers |> WithInline "{layers:$Layers}"]
         |+> Instance [
             "layers" =@ T<string>
@@ -1039,6 +1067,7 @@ module Definition =
 
     let TileLayerWMS =
         Class "L.TileLayer.WMS"
+        
         |=> Nested [TileLayerWMSOptions]
         |=> Inherits TileLayerT
         |+> Static [
@@ -1052,6 +1081,7 @@ module Definition =
 
     let TileLayerCanvasOptions =
         Class "L.TileLayer.Canvas.Options"
+        
         |+> Static [Constructor T<unit> |> WithInline "{}"]
         |+> Instance [
             "async" =@ T<bool>
@@ -1060,6 +1090,7 @@ module Definition =
 
     let TileLayerCanvas =
         Class "L.TileLayer.Canvas"
+        
         |=> Nested [TileLayerCanvasOptions]
         |=> Inherits TileLayerT
         |+> Static [
@@ -1075,6 +1106,7 @@ module Definition =
 
     let TileLayerOptions =
         Class "L.TileLayer.Options"
+        
         |+> Static [Constructor T<unit> |> WithInline "{}"]
         |+> Instance [
             "minZoom" =@ T<int>
@@ -1122,6 +1154,7 @@ module Definition =
 
     let TileLayerOSM =
         Class "L.TileLayer.OpenStreetMap"
+        
         |+> Static [
             "urlTemplate" =? T<string>
             |> WithGetterInline "'https://{s}.tile.osm.org/{z}/{x}/{y}.png'"
@@ -1131,6 +1164,7 @@ module Definition =
 
     let TileLayerMapbox =
         Class "L.TileLayer.Mapbox"
+        
         |+> Static [
             "urlTemplate" => T<string>?mapId ^-> T<string>
             |> WithInline "'https://{s}.tiles.mapbox.com/v3/'+$mapId+'/{z}/{x}/{y}.png'"
@@ -1141,6 +1175,7 @@ module Definition =
     let TileLayer =
         TileLayerT
         |=> Implements [ILayer]
+        
         |=> Nested [TileLayerOptions; TileLayerWMS; TileLayerCanvas; TileLayerOSM; TileLayerMapbox]
         |+> Static [
             Constructor (T<string>?urlTemplate * !?TileLayerOptions)
@@ -1229,6 +1264,7 @@ module Definition =
 
     let ImageOverlayOptions =
         Class "L.ImageOverlay.Options"
+        
         |+> Static [Constructor T<unit> |> WithInline "{}"]
         |+> Instance [
             "opacity" =@ T<float>
@@ -1239,6 +1275,7 @@ module Definition =
 
     let ImageOverlay =
         Class "L.ImageOverlay"
+        
         |+> Static [
             Constructor (T<string>?url * LatLngBoundsOrCoords?bounds * !?ImageOverlayOptions)
             |> WithComment "Instantiates an image overlay object given the URL of the image and the geographical bounds it is tied to."
@@ -1260,6 +1297,7 @@ module Definition =
 
     let PathOptions =
         Class "L.Path.Options"
+        
         |+> Static [Constructor T<unit> |> WithInline "{}"]
         |+> Instance [
             "stroke" =@ T<bool>
@@ -1300,6 +1338,7 @@ module Definition =
 
     let Path =
         Class "L.Path"
+        
         |=> Nested [PathOptions]
         |=> Implements [ILayer]
         |+> Instance [
@@ -1349,6 +1388,7 @@ module Definition =
  
     let PolylineOptions =
         Class "L.Polyline.Options"
+        
         |=> Inherits PathOptions
         |+> Static [Constructor T<unit> |> WithInline "{}"]
         |+> Instance [
@@ -1360,6 +1400,7 @@ module Definition =
 
     let Polyline =
         Class "L.Polyline"
+        
         |=> Nested [PolylineOptions]
         |=> Inherits Path
         |+> Static [
@@ -1383,6 +1424,7 @@ module Definition =
 
     let MultiPolyline =
         Class "L.MultiPolyline"
+        
         |=> Inherits Polyline
         |+> Static [
             Constructor (Type.ArrayOf (Type.ArrayOf LatLngOrCoords) * !?PolylineOptions)
@@ -1412,6 +1454,7 @@ module Definition =
     let Polygon =
         Class "L.Polygon"
         |=> Inherits Polyline
+        
         |+> Static [
             Constructor (Type.ArrayOf LatLngOrCoords * !?PolylineOptions)
             |> WithComment "Instantiates a polygon object given an array of geographical points and optionally an options object (the same as for Polyline). You can also create a polygon with holes by passing an array of arrays of latlngs, with the first latlngs array representing the exterior ring while the remaining represent the holes inside."
@@ -1424,6 +1467,7 @@ module Definition =
     let MultiPolygon =
         Class "L.MultiPolygon"
         |=> Inherits Polyline
+        
         |+> Static [
             Constructor (Type.ArrayOf (Type.ArrayOf LatLngOrCoords) * !?PolylineOptions)
             |> WithComment "Instantiates a multi-polygon object given an array of latlngs arrays (one for each individual polygon) and optionally an options object (the same as for MultiPolyline)."
@@ -1442,6 +1486,7 @@ module Definition =
     let Rectangle =
         Class "L.Rectangle"
         |=> Inherits Polygon
+        
         |+> Static [
             Constructor (LatLngBounds * !?PolylineOptions)
             |> WithComment "Instantiates a rectangle object with the given geographical bounds and optionally an options object."
@@ -1454,6 +1499,7 @@ module Definition =
     let CircleOptions =
         Class "L.Circle.Options"
         |=> Inherits Path
+        
         |+> Static [Constructor T<unit> |> WithInline "{}"]
         |+> Instance [
             "radius" =@ T<int>
@@ -1463,6 +1509,7 @@ module Definition =
     let Circle =
         Class "L.Circle"
         |=> Nested [CircleOptions]
+        
         |+> Static [
             Constructor (LatLngOrCoords?latlng * !? T<float>?radius * !? CircleOptions)
             |> WithComment "Instantiates a circle object given a geographical point, a radius in meters and optionally an options object."
@@ -1485,6 +1532,7 @@ module Definition =
     let CircleMarkerOptions =
         Class "L.CircleMarker.Options"
         |=> Inherits PathOptions
+        
         |+> Static [Constructor T<unit> |> WithInline "{}"]
         |+> Instance [
             "radius" =@ T<int>
@@ -1494,6 +1542,7 @@ module Definition =
     let CircleMarker =
         Class "L.CircleMarker"
         |=> Nested [CircleMarkerOptions]
+        
         |+> Static [
             Constructor (LatLngOrCoords * !? CircleMarkerOptions)
             |> WithComment "Instantiates a circle marker given a geographical point and optionally an options object. The default radius is 10 and can be altered by passing a \"radius\" member in the path options object."
@@ -1517,6 +1566,7 @@ module Definition =
     let LayerGroup =
         Class "L.LayerGroup"
         |=> Implements [ILayer]
+        
         |+> Static [
             Constructor (!? !| ILayer * !? T<obj>)
             |> WithComment "Create a layer group, optionally given an initial set of layers."
@@ -1553,6 +1603,7 @@ module Definition =
     let FeatureGroup =
         Class "L.FeatureGroup"
         |=> Inherits LayerGroup
+        
         |+> Static [
             Constructor (!? !| ILayer * !? T<obj>)
             |> WithComment "Create a layer group, optionally given an initial set of layers."
@@ -1574,6 +1625,7 @@ module Definition =
     let GeoJSONOptions =
         Class "L.GeoJSON.Options"
         |=> Inherits PathOptions
+        
         |+> Static [Constructor T<unit> |> WithInline "{}"]
         |+> Instance [
             "pointToLayer" =@ GeoJSONT * LatLngOrCoords ^-> T<unit>
@@ -1593,6 +1645,7 @@ module Definition =
     let GeoJSON =
         GeoJSONT
         |=> Nested [GeoJSONOptions]
+        
         |=> Inherits FeatureGroup
         |+> Instance [
             "addData" => GeoJSONT ^-> T<unit>
@@ -1638,6 +1691,7 @@ module Definition =
     let GridLayerOptions =
         Class "L.GridLayer.Options"
         |=> Inherits PathOptions
+        
         |+> Static [Constructor T<unit> |> WithInline "{}"]
         |+> Instance [
             "tileSize" =@ T<int> + Point
@@ -1675,6 +1729,7 @@ module Definition =
     let GridLayer =
         Class "L.GridLayer"
         |=> Nested [GridLayerOptions]
+        
         |+> Static [
             Constructor (!? GridLayerOptions)
             |> WithComment "Create a layer group, optionally given an initial set of layers."
@@ -1740,6 +1795,7 @@ module Definition =
     let ControlZoom =
         Class "L.Control.Zoom"
         |=> Nested [ControlZoomOptions]
+        
         |=> Inherits ControlT
         |+> Static [
             Constructor (!? T<string>)
@@ -1758,6 +1814,7 @@ module Definition =
         Class "L.Control.Attribution"
         |=> Nested [ControlAttributionOptions]
         |=> Inherits ControlT
+        
         |+> Static [
             Constructor !?ControlAttributionOptions
         ]
@@ -1787,6 +1844,7 @@ module Definition =
         Class "L.Control.Layers"
         |=> Nested [ControlLayersOptions]
         |=> Inherits ControlT
+        
         |+> Static [
             Constructor (!?T<obj>?baseLayers * !?T<obj>?overlays * !?ControlLayersOptions)
             |> WithComment "Creates an attribution control with the given layers. Base layers will be switched with radio buttons, while overlays will be switched with checkboxes. Note that all base layers should be passed in the base layers object, but only one should be added to the map during map instantiation."
@@ -1822,6 +1880,7 @@ module Definition =
         Class "L.Control.Scale"
         |=> Nested [ControlScaleOptions]
         |=> Inherits ControlT
+        
         |+> Static [
             Constructor !? ControlScaleOptions
         ]
@@ -1829,6 +1888,7 @@ module Definition =
     let Control =
         ControlT
         |=> Implements [IControl]
+        
         |=> Nested [ControlOptions; ControlPosition; ControlZoom; ControlAttribution; ControlLayers; ControlScale]
         |+> Static [
             Constructor (!?ControlOptions)
@@ -2075,6 +2135,7 @@ module Definition =
 
     let Marker =
         Class "L.Marker"
+        
         |=> Nested [MarkerOptions]
         |=> Implements [ILayer]
         |+> Static [
@@ -2386,6 +2447,7 @@ module Definition =
 
     let Browser =
         Class "L.Browser"
+        
         |+> Static [
             "ie" =? T<bool>
             |> WithComment "true for all Internet Explorer versions."
@@ -2457,6 +2519,7 @@ module Definition =
 
     let Util =
         Class "L.Util"
+        
         |+> Static [
             "extend" => T<obj> * !? T<obj> ^-> T<obj>
             |> WithComment "Merges the properties of the src object (or multiple objects) into dest object and returns the latter. Has an L.extend shortcut."
@@ -2495,6 +2558,7 @@ module Definition =
 
     let LineUtil =
         Class "L.LineUtil"
+        
         |+> Static [
             "simplify" => !| Point * T<int> ^-> !| Point
             |> WithComment "Dramatically reduces the number of points in a polyline while retaining its shape and returns a new array of simplified points, using the Douglas-Peucker algorithm. Used for a huge performance boost when processing/displaying Leaflet polylines for each zoom level and also reducing visual noise. tolerance affects the amount of simplification (lesser value means higher quality but slower and with more points). Also released as a separated micro-library Simplify.js."
@@ -2510,6 +2574,7 @@ module Definition =
 
     let PolyUtil =
         Class "L.PolyUtil"
+        
         |+> Static [
             "clipPolygon" => !| Point * Bounds * !? T<bool> ^-> !| Point
             |> WithComment "Clips the polygon geometry defined by the given points by the given bounds (using the Sutherland-Hodgman algorithm). Used by Leaflet to only show polygon points that are on the screen or near, increasing performance. Note that polygon points needs different algorithm for clipping than polyline, so there's a separate method for it."
@@ -2517,6 +2582,7 @@ module Definition =
 
     let PosAnimation =
         Class "L.PosAnimation"
+        
         |=> Inherits IEvented
         |+> Static [
             Constructor(T<unit>)
@@ -2545,6 +2611,7 @@ module Definition =
     let Draggable =
         Class "L.Draggable"
         |=> Inherits IEvented
+        
         |=> Nested [DraggableOptions]
         |+> Static [
             Constructor (T<Element> * !? T<Element> * !? T<bool> * !? DraggableOptions)
@@ -2576,23 +2643,66 @@ module Definition =
             |> WithComment "Adds a constructor hook to the class."
         ]
 
-    module Res =
-        let Css =
-            Resource "Css" "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.css"
-        let Js =
-            Resource "Js" "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.js"
-            |> Requires [Css]
+    let L =
+        Class "L"
+        |> ImportDefault "leaflet"
+        |+> Static [
+            "map" => (T<Element> + T<string>)?id * !?MapOptions ^-> MapT
+            "tileLayer" => T<string>?urlTemplate * !?TileLayerOptions ^-> TileLayerT
+            "latLng" => (T<float>?latitude * T<float>?longitude * !? T<float>?altitude) ^-> LatLng
+            "latLng" => (!| (T<int> * T<int> * !? T<int>)) ^-> LatLng
+            "latLng" => T<obj> ^-> LatLng
+            "latLngBounds" => (LatLng?corner1 * LatLng?corner2) ^-> LatLngBounds
+            "latLngBounds" => (!| LatLng) ^-> LatLngBounds
+            "point" => (T<float>?x * T<float>?y * !? T<bool>) ^-> Point
+            "point" => (T<int>?x * T<int>?y * !? T<bool>) ^-> Point
+            "point" => (!| T<int> + !| T<float>) ^-> Point
+            "point" => (T<obj>) ^-> Point
+            "bounds" => (PointOrCoords?corner1 * PointOrCoords?corner2) ^-> Bounds
+            "bounds" => (!| PointOrCoords) ^-> Bounds
+            "icon" => IconOptions ^-> Icon
+            "divIcon" => DivIconOptions ^-> DivIcon
+            "transformation" => (T<float>?a * T<float>?b * T<float>?c * T<float>?d) ^-> Transformation
+            "transformation" => (T<obj>) ^-> Transformation
+            "tooltip" => (!?TooltipOptions * !?ILayer?source) ^-> Tooltip
+            "popup" => (!?PopupOptions * !?ILayer?source) ^-> Popup
+            "imageOverlay" => (T<string>?url * LatLngBoundsOrCoords?bounds * !?ImageOverlayOptions) ^-> ImageOverlay
+            "polyline" => (Type.ArrayOf LatLngOrCoords * !?PolylineOptions) ^-> Polyline
+            "polygon" => (Type.ArrayOf LatLngOrCoords * !?PolylineOptions) ^-> Polygon
+            "rectangle" => (LatLngBounds * !?PolylineOptions) ^-> Rectangle
+            "circle" => (LatLngOrCoords?latlng * !? T<float>?radius * !? CircleOptions) ^-> Circle
+            "circleMarker" => (LatLngOrCoords * !? CircleMarkerOptions) ^-> CircleMarker
+            "layerGroup" => (!? !| ILayer * !? T<obj>) ^-> LayerGroup
+            "featureGroup" => (!? !| ILayer * !? T<obj>) ^-> FeatureGroup
+            "geoJSON" => (!? T<obj> * !? GeoJSONOptions) ^-> GeoJSON
+            "gridLayer" => (!? GridLayerOptions) ^-> GridLayer
+            "control" => (!?ControlOptions) ^-> Control
+            "marker" => (LatLngOrCoords * !?MarkerOptions) ^-> Marker
+            "posAnimation" => (T<unit>) ^-> PosAnimation
+            "draggable" => (T<Element> * !? T<Element> * !? T<bool> * !? DraggableOptions) ^-> Draggable
+        ]
+        
+
+    let S =
+        Class "Styles"
+        |+> Static [
+            "style" => T<unit> ^-> T<unit>
+            |> ImportFile "leaflet/dist/leaflet.css"
+        ]
 
     let Assembly =
         Assembly [
-            Namespace "WebSharper.Leaflet.Resources" [
-                Res.Css
-                Res.Js
-            ]
             Namespace "WebSharper.Leaflet" [
-                LatLng
-                LatLngBounds
-                Point
+                L
+                LClass
+                Draggable
+                TileLayerT
+                MapT
+                PopupT
+                TooltipT
+                LatLngT
+                PointT
+                LatLngBoundsT
                 Bounds
                 Icon
                 DivIcon
@@ -2616,8 +2726,6 @@ module Definition =
                 GeoJSONEvent
                 PopupEvent
                 DragEndEvent
-                Popup
-                TileLayer
                 ImageOverlay
                 Path
                 Polyline
@@ -2638,17 +2746,18 @@ module Definition =
                 FitBoundsOptions
                 MapPanes
                 Marker
-                Map
                 Browser
-                Tooltip
                 TooltipEvent
                 Renderer
                 ZoomAnimEvent
                 KeyboardEvent
                 Layer
+                PosAnimation
+                GridLayer
+                TileErrorEvent
+                S
             ]
         ]
-        |> Requires [Res.Js]
 
 open WebSharper.InterfaceGenerator
 
