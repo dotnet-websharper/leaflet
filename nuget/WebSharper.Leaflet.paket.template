@@ -8,7 +8,7 @@ repositoryUrl https://github.com/dotnet-websharper/leaflet
 licenseUrl http://github.com/intellifactory/websharper.leaflet/blob/master/LICENSE.md
 iconUrl https://github.com/dotnet-websharper/core/raw/websharper50/tools/WebSharper.png
 description
-    WebSharper Extensions for Leaflet 1.9.4
+    WebSharper Extensions for Leaflet 1.9.4+
 tags
     WebSharper Web JavaScript F# C#
 files
