@@ -120,3 +120,9 @@ NUGET
     WebSharper.UI (10.1.0.662)
       HtmlAgilityPack (>= 1.12.4)
       WebSharper (>= 10.1.0.662 < 10.1.1)
+
+GROUP wsbuild
+
+GIT
+  remote: https://github.com/dotnet-websharper/build-script
+     (ae4e3345219bb1ef82143ad331e582f9c81791ac)

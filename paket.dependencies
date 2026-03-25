@@ -11,4 +11,6 @@ nuget WebSharper prerelease
 nuget WebSharper.FSharp prerelease
 nuget WebSharper.UI prerelease
 nuget WebSharper.AspNetCore prerelease
-nuget Microsoft.Net.Http.Headers 2.3.8
+
+group wsbuild
+    git https://github.com/dotnet-websharper/build-script websharper80
