@@ -13,6 +13,7 @@ tags
     WebSharper Web JavaScript F# C#
 files
     ../WebSharper.Leaflet/bin/Release/netstandard2.0/WebSharper.Leaflet.dll ==> lib/netstandard2.0
+    ../WebSharper.Leaflet/bin/Release/netstandard2.0/WebSharper.Leaflet.websharper ==> lib/netstandard2.0
     ../WebSharper.Leaflet/bin/Release/netstandard2.0/WebSharper.Leaflet.xml ==> lib/netstandard2.0
     ../WebSharper.Leaflet/WebSharper.Leaflet.fsproj ==> src/
 dependencies
